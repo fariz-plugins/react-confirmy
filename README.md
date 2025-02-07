@@ -1,3 +1,6 @@
+# React Confirmy (Under Development) ⚠️
+> 🚧 This package is still in early development. Use at your own risk!
+
 # React Confirmation Dialog
 
 A beautiful, customizable confirmation dialog component for React applications with Tailwind CSS and Bootstrap support.
