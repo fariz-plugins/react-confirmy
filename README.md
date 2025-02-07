@@ -2,7 +2,7 @@
 
 A beautiful, customizable confirmation dialog component for React applications with Tailwind CSS and Bootstrap support.
 
-![Confirmation Dialog Preview](https://i.imgur.com/example.png)
+![Confirmation Dialog Preview]([https://i.imgur.com/example.png](https://raw.githubusercontent.com/fariz-plugins/react-confirmy/refs/heads/main/banner.png))
 
 ## Features
 
