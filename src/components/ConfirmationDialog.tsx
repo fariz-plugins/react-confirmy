@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, createRef, useRef } from "react";
 import { createPopper, Instance } from "@popperjs/core";
 import { X, AlertCircle } from "lucide-react";
 import { ConfirmationDialogProps } from "./types";
@@ -28,10 +28,12 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   };
 
   useEffect(() => {
-    if (!isOpen || !triggerRef.current || !dialogRef.current) return;
+    console.log("triggerRef", triggerRef, dialogRef, isOpen);
+
+    if (!isOpen || !triggerRef?.current || !dialogRef?.current) return;
 
     popperInstanceRef.current = createPopper(
-      triggerRef.current,
+      triggerRef?.current,
       dialogRef.current,
       {
         placement: "top",
