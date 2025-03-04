@@ -1,288 +1,280 @@
 import React, { useRef, useState } from 'react';
-import Confirmy, { DialogProvider, useDialog } from './index';
-import { AlertTriangle, AlertOctagon, Info, Trash2, Settings, UserPlus } from 'lucide-react';
+import { Confirmy, DialogProvider, useDialog } from './index';
+import { AlertTriangle, AlertOctagon, Info, Trash2, Settings, UserPlus, Copy } from 'lucide-react';
 
-const DemoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="mb-8">
-    <h2 className="text-xl font-bold mb-4">{title}</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {children}
+const Header = () => (
+  <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white py-16">
+    <div className="container mx-auto px-4">
+      <h1 className="text-5xl font-bold mb-4">React Confirmy</h1>
+      <p className="text-xl mb-8 opacity-90">
+        A beautiful, customizable confirmation dialog component for React applications
+      </p>
+      
+      <div className="bg-black bg-opacity-50 p-6 rounded-lg max-w-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Installation</h2>
+          <button 
+            onClick={() => navigator.clipboard.writeText('npm install react-confirmy')}
+            className="flex items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded hover:bg-opacity-20"
+          >
+            <Copy size={16} /> Copy
+          </button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm opacity-70 mb-2">Using npm:</p>
+            <code className="bg-black bg-opacity-50 px-4 py-2 rounded block">
+              npm install react-confirmy
+            </code>
+          </div>
+          <div>
+            <p className="text-sm opacity-70 mb-2">Using yarn:</p>
+            <code className="bg-black bg-opacity-50 px-4 py-2 rounded block">
+              yarn add react-confirmy
+            </code>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );
 
-const DemoCard = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-4 border rounded-lg bg-white shadow-sm">
-    {children}
+const CodeBlock = ({ code }: { code: string }) => (
+  <pre className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">
+    <code>{code}</code>
+  </pre>
+);
+
+const DemoSection = ({ title, description, code, children }: { 
+  title: string; 
+  description: string;
+  code: string;
+  children: React.ReactNode 
+}) => (
+  <div className="mb-12">
+    <h2 className="text-2xl font-bold mb-2">{title}</h2>
+    <p className="text-gray-600 mb-6">{description}</p>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="p-6 border rounded-lg bg-white shadow-sm">
+        <h3 className="text-lg font-semibold mb-4">Live Demo</h3>
+        {children}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Code Example</h3>
+        <CodeBlock code={code} />
+      </div>
+    </div>
   </div>
 );
 
-const AnimationDemo = () => {
+// Basic Dialog Demo
+const BasicDialog = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [animation, setAnimation] = useState<'fade' | 'scale' | 'slide'>('fade');
-
+  
   return (
-    <DemoCard>
-      <div className="flex flex-col gap-2">
-        <select
-          value={animation}
-          onChange={(e) => setAnimation(e.target.value as any)}
-          className="mb-2 p-2 border rounded"
-        >
-          <option value="fade">Fade</option>
-          <option value="scale">Scale</option>
-          <option value="slide">Slide</option>
-        </select>
-        <button
-          ref={buttonRef}
-          onClick={() => setIsOpen(true)}
-          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-        >
-          Animation: {animation}
-        </button>
-      </div>
-      <Confirmy
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={() => alert('Confirmed!')}
-        triggerRef={buttonRef}
-        animation={{
-          type: animation,
-          duration: 200,
-          timing: 'ease-out'
-        }}
-      />
-    </DemoCard>
-  );
-};
-
-const FormDemo = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const formFields = [
-    {
-      type: 'text' as const,
-      name: 'username',
-      label: 'Username',
-      required: true,
-      validation: (value: string) =>
-        value && value.length < 3 ? 'Username must be at least 3 characters' : undefined
-    },
-    {
-      type: 'select' as const,
-      name: 'role',
-      label: 'Role',
-      required: true,
-      options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' },
-        { label: 'Guest', value: 'guest' }
-      ]
-    },
-    {
-      type: 'textarea' as const,
-      name: 'notes',
-      label: 'Notes',
-      required: false
-    }
-  ];
-
-  return (
-    <DemoCard>
-      <button
-        ref={buttonRef}
-        onClick={() => setIsOpen(true)}
-        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-      >
-        Form Dialog
-      </button>
-      <Confirmy
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={(data) => {
-          alert('Form submitted with data: ' + JSON.stringify(data, null, 2));
-        }}
-        triggerRef={buttonRef}
-        title="Create User"
-        message="Please fill in the user details"
-        type="info"
-        formFields={formFields}
-        size="lg"
-        customIcon={UserPlus}
-      />
-    </DemoCard>
-  );
-};
-
-const AsyncDemo = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const asyncConfirm = () => {
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        Math.random() > 0.5 ? resolve() : reject();
-      }, 2000);
-    });
-  };
-
-  return (
-    <DemoCard>
+    <>
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(true)}
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
-        Async Dialog
+        Show Dialog
       </button>
       <Confirmy
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onConfirm={asyncConfirm}
+        onConfirm={() => setIsOpen(false)}
         triggerRef={buttonRef}
-        title="Process Action"
-        type="warning"
-        asyncOptions={{
-          loadingText: 'Processing...',
-          successText: 'Action completed!',
-          errorText: 'Failed to complete action',
-          timeout: 3000
-        }}
+        title="Basic Dialog"
+        message="This is a basic confirmation dialog"
+        type="info"
+        position="bottom"
       />
-    </DemoCard>
+    </>
   );
 };
 
-const NestedDemo = () => {
+const basicDialogCode = `
+const BasicDialog = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [nestedOpen, setNestedOpen] = useState(false);
-  const nestedButtonRef = useRef<HTMLButtonElement>(null);
-
+  
   return (
-    <DemoCard>
+    <>
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600"
       >
-        Nested Dialog
+        Show Dialog
       </button>
       <Confirmy
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onConfirm={() => {}}
+        onConfirm={() => setIsOpen(false)}
         triggerRef={buttonRef}
-        title="Settings"
+        title="Basic Dialog"
+        message="This is a basic confirmation dialog"
         type="info"
-        customIcon={Settings}
-      >
-        <button
-          ref={nestedButtonRef}
-          onClick={() => setNestedOpen(true)}
-          className="px-3 py-1.5 bg-red-500 text-white rounded text-sm"
-        >
-          Delete Account
-        </button>
-        <Confirmy
-          isOpen={nestedOpen}
-          onClose={() => setNestedOpen(false)}
-          onConfirm={() => alert('Account deleted')}
-          triggerRef={nestedButtonRef}
-          title="Delete Account"
-          message="Are you sure you want to delete your account? This action cannot be undone."
-          type="danger"
-          customIcon={Trash2}
-          nested={true}
-          parentId="settings-dialog"
-        />
-      </Confirmy>
-    </DemoCard>
+        position="bottom"
+      />
+    </>
   );
 };
+`;
 
+// Queue Demo Component
 const QueueDemo = () => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const { addDialog } = useDialog();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const showQueuedDialogs = () => {
-    // Add multiple dialogs to the queue
-    ['info', 'warning', 'danger'].forEach((type, index) => {
-      setTimeout(() => {
-        addDialog({
-          id: `dialog-${index}`,
-          props: {
-            isOpen: true,
-            onClose: () => {},
-            onConfirm: () => {},
-            triggerRef: buttonRef,
-            title: `Dialog ${index + 1}`,
-            message: `This is dialog ${index + 1} in the queue`,
-            type: type as any,
-            stackOrder: index
-          }
-        });
-      }, index * 500);
+    addDialog({
+      component: Confirmy,
+      isOpen: true,
+      triggerRef: buttonRef,
+      title: "First Action",
+      message: "This is the first dialog in the queue",
+      type: "info",
+      onClose: () => console.log("First dialog closed"),
+      onConfirm: () => console.log("First dialog confirmed"),
+      position: "bottom"
+    });
+
+    addDialog({
+      component: Confirmy,
+      isOpen: true,
+      triggerRef: buttonRef,
+      title: "Second Action",
+      message: "This is the second dialog in the queue",
+      type: "warning",
+      onClose: () => console.log("Second dialog closed"),
+      onConfirm: () => console.log("Second dialog confirmed"),
+      position: "bottom"
     });
   };
 
   return (
-    <DemoCard>
-      <button
-        ref={buttonRef}
-        onClick={showQueuedDialogs}
-        className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600"
-      >
-        Show Queue
-      </button>
-    </DemoCard>
+    <button
+      ref={buttonRef}
+      onClick={showQueuedDialogs}
+      className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+    >
+      Show Queue
+    </button>
   );
 };
 
-export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
+const queueDemoCode = `
+const QueueDemo = () => {
+  const { addDialog } = useDialog();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const showQueuedDialogs = () => {
+    addDialog({
+      component: Confirmy,
+      isOpen: true,
+      triggerRef: buttonRef,
+      title: "First Action",
+      message: "First dialog in queue",
+      type: "info",
+      position: "bottom"
+    });
+
+    addDialog({
+      component: Confirmy,
+      isOpen: true,
+      triggerRef: buttonRef,
+      title: "Second Action",
+      message: "Second dialog in queue",
+      type: "warning",
+      position: "bottom"
+    });
+  };
 
   return (
+    <button ref={buttonRef} onClick={showQueuedDialogs}>
+      Show Queue
+    </button>
+  );
+};
+`;
+
+const App = () => {
+  return (
     <DialogProvider>
-      <div className={`min-h-screen p-8 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50'}`}>
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">React Confirmy Demo</h1>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`px-4 py-2 rounded-lg ${
-                darkMode
-                  ? 'bg-gray-700 text-white hover:bg-gray-600'
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-              }`}
-            >
-              Toggle {darkMode ? 'Light' : 'Dark'} Mode
-            </button>
-          </div>
-
-          <DemoSection title="Animations">
-            <AnimationDemo />
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        
+        <div className="container mx-auto px-4 py-12">
+          <DemoSection 
+            title="Basic Usage" 
+            description="A simple confirmation dialog with basic configuration"
+            code={basicDialogCode}
+          >
+            <BasicDialog />
           </DemoSection>
 
-          <DemoSection title="Forms">
-            <FormDemo />
-          </DemoSection>
-
-          <DemoSection title="Async Operations">
-            <AsyncDemo />
-          </DemoSection>
-
-          <DemoSection title="Nested Dialogs">
-            <NestedDemo />
-          </DemoSection>
-
-          <DemoSection title="Dialog Queue">
+          <DemoSection 
+            title="Dialog Queue" 
+            description="Show multiple dialogs in sequence using the dialog queue system"
+            code={queueDemoCode}
+          >
             <QueueDemo />
           </DemoSection>
+        </div>
+
+        {/* Props Table at the bottom */}
+        <div className="container mx-auto px-4 pb-12">
+          <h2 className="text-2xl font-bold mb-6">Available Props</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-6 py-3 text-left">Prop</th>
+                  <th className="px-6 py-3 text-left">Type</th>
+                  <th className="px-6 py-3 text-left">Default</th>
+                  <th className="px-6 py-3 text-left">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t">
+                  <td className="px-6 py-4 font-medium">isOpen</td>
+                  <td className="px-6 py-4">boolean</td>
+                  <td className="px-6 py-4">required</td>
+                  <td className="px-6 py-4">Controls dialog visibility</td>
+                </tr>
+                <tr className="border-t bg-gray-50">
+                  <td className="px-6 py-4 font-medium">position</td>
+                  <td className="px-6 py-4">'top' | 'bottom' | 'left' | 'right'</td>
+                  <td className="px-6 py-4">'bottom'</td>
+                  <td className="px-6 py-4">Position relative to trigger element</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="px-6 py-4 font-medium">type</td>
+                  <td className="px-6 py-4">'danger' | 'warning' | 'info'</td>
+                  <td className="px-6 py-4">'warning'</td>
+                  <td className="px-6 py-4">Dialog type affecting colors and icon</td>
+                </tr>
+                <tr className="border-t bg-gray-50">
+                  <td className="px-6 py-4 font-medium">size</td>
+                  <td className="px-6 py-4">'sm' | 'md' | 'lg'</td>
+                  <td className="px-6 py-4">'md'</td>
+                  <td className="px-6 py-4">Dialog size</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="px-6 py-4 font-medium">animation</td>
+                  <td className="px-6 py-4">AnimationConfig</td>
+                  <td className="px-6 py-4">scale</td>
+                  <td className="px-6 py-4">Animation configuration</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </DialogProvider>
   );
-}
+};
+
+export default App;

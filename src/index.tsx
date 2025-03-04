@@ -101,7 +101,7 @@ const DialogContext = createContext<DialogContextType>({
   updateDialog: () => {},
 });
 
-export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
+const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
   const [dialogQueue, setDialogQueue] = useState<DialogState[]>([]);
 
   const addDialog = (dialog: DialogState) => {
@@ -128,7 +128,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
   );
 };
 
-export const useDialog = () => {
+const useDialog = () => {
   const context = useContext(DialogContext);
   if (!context) {
     throw new Error('useDialog must be used within a DialogProvider');
@@ -181,7 +181,6 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-<<<<<<< HEAD
   title = 'Confirm Action',
   message = 'Are you sure you want to proceed?',
   confirmText = 'Confirm',
@@ -189,17 +188,9 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
   type = 'warning',
   size = 'md',
   position = 'top',
-=======
-  title = "Confirm Action",
-  message = "Are you sure you want to proceed?",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  type = "warning",
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
   triggerRef,
   framework = "tailwind",
   styles = {},
-<<<<<<< HEAD
   className = '',
   darkMode = false,
   customIcon,
@@ -211,9 +202,6 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
   nested = false,
   parentId,
   children
-=======
-  className = "",
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
 }) => {
   const {
     dialogRef,
@@ -240,7 +228,6 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
     ...styles,
   };
 
-<<<<<<< HEAD
   if (!isOpen) return null;
 
   const getIcon = () => {
@@ -264,71 +251,8 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
       return type === 'danger' ? 'text-red-500' : 
              type === 'warning' ? 'text-yellow-500' : 
              'text-blue-500';
-=======
-  useEffect(() => {
-    if (!isOpen || !triggerRef.current || !dialogRef.current) return;
-
-    popperInstanceRef.current = createPopper(
-      triggerRef.current,
-      dialogRef.current,
-      {
-        placement: "top",
-        modifiers: [
-          {
-            name: "offset",
-            options: { offset: [0, 8] },
-          },
-          {
-            name: "arrow",
-            options: {
-              element: arrowRef.current,
-              padding: 5,
-            },
-          },
-          {
-            name: "preventOverflow",
-            options: {
-              padding: 8,
-              altAxis: true,
-            },
-          },
-          {
-            name: "flip",
-            options: {
-              fallbackPlacements: ["bottom", "right", "left"],
-            },
-          },
-        ],
-      }
-    );
-
-    return () => {
-      if (popperInstanceRef.current) {
-        popperInstanceRef.current.destroy();
-        popperInstanceRef.current = null;
-      }
-    };
-  }, [isOpen, triggerRef]);
-
-  useEffect(() => {
-    if (popperInstanceRef.current) {
-      popperInstanceRef.current.update();
     }
-  }, [message]);
-
-  if (!isOpen) return null;
-
-  const getIconColor = (
-    type: "danger" | "warning" | "info",
-    framework: Framework
-  ): string => {
-    if (framework === "tailwind") {
-      if (type === "danger") return "text-red-500";
-      if (type === "warning") return "text-yellow-500";
-      return "text-blue-500"; // default to 'info' case
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
-    }
-    return ""; // Add any fallback if needed for other frameworks
+    return '';
   };
 
   const renderFormFields = () => {
@@ -392,7 +316,6 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
   return (
     <div
       ref={dialogRef}
-<<<<<<< HEAD
       className={`
         ${mergedStyles.container}
         ${darkMode ? mergedStyles.darkMode?.container || '' : ''}
@@ -407,13 +330,6 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
     >
       <div ref={arrowRef} className={mergedStyles.arrow} />
       
-=======
-      className={`${mergedStyles.container} ${className}`}
-      style={{ position: "absolute" }}
-    >
-      <div ref={arrowRef} className={mergedStyles.arrow} data-popper-arrow />
-
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
       <button
         ref={firstFocusableRef}
         className={mergedStyles.closeButton}
@@ -450,15 +366,11 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
       )}
 
       <div className={mergedStyles.footer}>
-<<<<<<< HEAD
         <button
           className={`${mergedStyles.cancelButton} ${darkMode ? mergedStyles.darkMode?.cancelButton || '' : ''}`}
           onClick={onClose}
           disabled={isLoading}
         >
-=======
-        <button onClick={onClose} className={mergedStyles.cancelButton}>
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
           {cancelText}
         </button>
         <button
@@ -475,8 +387,19 @@ const Confirmy: React.FC<ConfirmationDialogProps> = ({
     </div>
   );
 };
-<<<<<<< HEAD
 
-export default Confirmy;
-=======
->>>>>>> 72df107bf2d1054c422f350c647251b12a3f6ad9
+export { useConfirmy } from './hooks/useConfirmy';
+export { Confirmy } from './components/Confirmy';
+export { DialogProvider, useDialog } from './components/DialogContext';
+export type {
+  DialogType,
+  Framework,
+  DialogSize,
+  DialogPosition,
+  StyleConfig,
+  ConfirmationDialogProps,
+  DialogProviderProps,
+  DialogContextType,
+  AnimationConfig,
+  DialogFormField
+} from '../types';

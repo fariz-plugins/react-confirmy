@@ -5,7 +5,7 @@ export type DialogType = 'danger' | 'warning' | 'info';
 export type Framework = 'tailwind' | 'bootstrap' | 'none';
 export type DialogSize = 'sm' | 'md' | 'lg';
 export type DialogPosition = 'top' | 'bottom' | 'left' | 'right';
-export type AnimationType = 'fade' | 'scale' | 'slide' | 'none';
+export type AnimationType = 'fade' | 'scale' | 'none';
 export type TransitionTiming = 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
 
 export interface AnimationConfig {

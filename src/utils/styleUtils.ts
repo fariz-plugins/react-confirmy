@@ -36,8 +36,6 @@ export const getAnimationStyles = (animation: AnimationConfig, isOpen: boolean, 
         return `${baseTransition} ${isOpen ? 'opacity-100' : 'opacity-0'}`;
       case 'scale':
         return `${baseTransition} ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`;
-      case 'slide':
-        return `${baseTransition} transform ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`;
       case 'none':
         return '';
       default:

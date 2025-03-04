@@ -1,9 +1,8 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import type { ConfirmationDialogProps } from '../../types';
+import type { ConfirmationDialogProps } from '../types';
 import { useConfirmy } from '../hooks/useConfirmy';
-import { defaultStyles } from '../styles/defaultStyles';
-import { getSizeClasses, getAnimationClasses, getAnimationStyles } from '../utils/styleUtils';
+import { defaultStyles } from './styles';
 import { getDialogIcon, getIconColor } from '../utils/iconUtils';
 
 /**
@@ -26,11 +25,11 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
     className = '',
     darkMode = false,
     customIcon,
-    animation = { type: 'scale', duration: 200, timing: 'ease-out' },
     zIndex = 50,
     formFields = [],
     nested = false,
     parentId,
+    position = 'center'
   } = props;
 
   const {
@@ -80,14 +79,26 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
     ));
   };
 
+  // Position classes based on the position prop
+  const getPositionClasses = () => {
+    const baseClasses = 'fixed';
+    switch (position) {
+      case 'top':
+        return `${baseClasses} top-4 left-1/2 -translate-x-1/2`;
+      case 'bottom':
+        return `${baseClasses} bottom-4 left-1/2 -translate-x-1/2`;
+      case 'center':
+      default:
+        return `${baseClasses} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`;
+    }
+  };
+
   return (
     <div
       ref={dialogRef}
       className={`
+        ${getPositionClasses()}
         ${mergedStyles.container}
-        ${getSizeClasses(size, framework)}
-        ${getAnimationClasses(isOpen, framework)}
-        ${getAnimationStyles(animation, isOpen, framework)}
         ${className}
         ${darkMode ? mergedStyles.darkMode?.container : ''}
       `}
