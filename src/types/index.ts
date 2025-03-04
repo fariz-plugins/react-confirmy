@@ -4,7 +4,7 @@ export interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
-  triggerRef: React.RefObject<HTMLElement>;
+  triggerRef?: React.RefObject<HTMLElement>;
   title?: string;
   message?: string;
   confirmText?: string;
@@ -14,7 +14,7 @@ export interface ConfirmationDialogProps {
   styles?: Partial<StyleConfig>;
   className?: string;
   darkMode?: boolean;
-  customIcon?: React.ElementType;
+  customIcon?: React.ComponentType<any>;
   zIndex?: number;
   formFields?: DialogFormField[];
   position?: 'top' | 'center' | 'bottom';

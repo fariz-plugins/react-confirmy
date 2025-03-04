@@ -1,10 +1,11 @@
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import type { DialogType, Framework } from '../../types';
+import { ComponentType } from 'react';
 
 /**
  * Get the appropriate icon component based on dialog type
  */
-export const getDialogIcon = (type: DialogType, customIcon?: React.ComponentType) => {
+export const getDialogIcon = (type: DialogType, customIcon?: ComponentType<any>) => {
   if (customIcon) return customIcon;
   switch (type) {
     case 'danger':
