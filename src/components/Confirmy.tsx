@@ -5,21 +5,15 @@ import { useConfirmy } from '../hooks/useConfirmy';
 import { defaultStyles } from './styles';
 import { getDialogIcon, getIconColor } from '../utils/iconUtils';
 
-/**
- * Confirmy Dialog Component
- * A customizable confirmation dialog with support for different frameworks, animations, and async operations
- */
 export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
   const {
     isOpen,
     onClose,
-    onConfirm,
     title = 'Confirm Action',
     message = 'Are you sure you want to proceed?',
     confirmText = 'Confirm',
     cancelText = 'Cancel',
     type = 'warning',
-    size = 'md',
     framework = 'tailwind',
     styles = {},
     className = '',
@@ -27,8 +21,6 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
     customIcon,
     zIndex = 50,
     formFields = [],
-    nested = false,
-    parentId,
     position = 'center'
   } = props;
 
@@ -107,7 +99,6 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
       aria-modal="true"
       aria-labelledby="dialog-title"
       aria-describedby="dialog-message"
-      data-parent-id={parentId}
     >
       <div
         ref={arrowRef}

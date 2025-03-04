@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Confirmy, DialogProvider, useDialog } from './index';
-import { AlertTriangle, AlertOctagon, Info, Trash2, Settings, UserPlus, Copy } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 const Header = () => (
   <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white py-16">

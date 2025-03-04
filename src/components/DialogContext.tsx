@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import type { DialogContextType, DialogProviderProps, DialogState, ConfirmationDialogProps } from '../../types';
-import { Confirmy } from './Confirmy';
+import React, { createContext, useState } from 'react';
+import type { DialogContextType, DialogProviderProps, DialogState, ConfirmationDialogProps } from '../types';
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
 
@@ -28,22 +27,12 @@ export function DialogProvider({ children }: DialogProviderProps) {
   return (
     <DialogContext.Provider value={{ dialogQueue, addDialog, removeDialog, updateDialog }}>
       {children}
-      {dialogQueue.map((dialog) => (
-        <Confirmy
-          key={dialog.id}
-          {...dialog.props}
-          onClose={() => {
-            dialog.props.onClose?.();
-            removeDialog(dialog.id);
-          }}
-        />
-      ))}
     </DialogContext.Provider>
   );
 }
 
 export function useDialog() {
-  const context = useContext(DialogContext);
+  const context = React.useContext(DialogContext);
   if (!context) {
     throw new Error('useDialog must be used within a DialogProvider');
   }

@@ -3,14 +3,13 @@ import { ReactNode } from 'react';
 export interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void> | void;
   triggerRef: React.RefObject<HTMLElement>;
   title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
   type?: 'info' | 'warning' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
   framework?: Framework;
   styles?: Partial<StyleConfig>;
   className?: string;
@@ -18,10 +17,7 @@ export interface ConfirmationDialogProps {
   customIcon?: React.ElementType;
   zIndex?: number;
   formFields?: DialogFormField[];
-  nested?: boolean;
-  parentId?: string;
   position?: 'top' | 'center' | 'bottom';
-  [key: string]: any;
 }
 
 export interface DialogState {
