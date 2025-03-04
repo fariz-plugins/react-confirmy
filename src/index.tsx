@@ -1,46 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, createContext, useContext, useState } from 'react';
 import { createPopper, Instance } from '@popperjs/core';
-import { X, AlertCircle } from 'lucide-react';
-
-type Framework = 'tailwind' | 'bootstrap' | 'none';
-type DialogType = 'danger' | 'warning' | 'info';
-
-export interface ConfirmationDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title?: string;
-  message?: string;
-  confirmText?: string;
-  cancelText?: string;
-  type?: DialogType;
-  triggerRef: React.RefObject<HTMLElement>;
-  framework?: Framework;
-  styles?: Partial<StyleConfig>;
-  className?: string;
-}
-
-interface StyleConfig {
-  container: string;
-  arrow: string;
-  closeButton: string;
-  closeIcon: string;
-  header: string;
-  icon: string;
-  title: string;
-  message: string;
-  footer: string;
-  cancelButton: string;
-  confirmButton: {
-    danger: string;
-    warning: string;
-    info: string;
-  };
-}
+import { X, AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import type {
+  DialogType,
+  Framework,
+  DialogSize,
+  DialogPosition,
+  StyleConfig,
+  ConfirmationDialogProps,
+  DialogProviderProps,
+  DialogContextType,
+  DialogState,
+  DialogFormField,
+  AsyncConfirmOptions,
+  AnimationConfig,
+  TransitionTiming
+} from '../types';
+import { useConfirmy } from './hooks/useConfirmy';
 
 const defaultStyles: Record<Framework, StyleConfig> = {
   tailwind: {
-    container: 'z-50 bg-white rounded-lg shadow-xl w-[320px] p-4 border border-gray-200',
+    container: 'z-50 bg-white rounded-lg shadow-xl p-4 border border-gray-200 transition-all duration-200',
     arrow: 'absolute w-2 h-2',
     closeButton: 'absolute right-2 top-2 text-gray-400 hover:text-gray-500',
     closeIcon: 'w-4 h-4',
@@ -54,10 +34,21 @@ const defaultStyles: Record<Framework, StyleConfig> = {
       danger: 'px-3 py-1.5 text-xs font-medium text-white rounded-md bg-red-600 hover:bg-red-700',
       warning: 'px-3 py-1.5 text-xs font-medium text-white rounded-md bg-yellow-600 hover:bg-yellow-700',
       info: 'px-3 py-1.5 text-xs font-medium text-white rounded-md bg-blue-600 hover:bg-blue-700'
+    },
+    darkMode: {
+      container: 'bg-gray-800 border-gray-700',
+      title: 'text-gray-100',
+      message: 'text-gray-300',
+      cancelButton: 'text-gray-300 bg-gray-700 hover:bg-gray-600',
+      confirmButton: {
+        danger: 'bg-red-500 hover:bg-red-600',
+        warning: 'bg-yellow-500 hover:bg-yellow-600',
+        info: 'bg-blue-500 hover:bg-blue-600'
+      }
     }
   },
   bootstrap: {
-    container: 'popover bs-popover-auto bg-white rounded shadow-lg p-3 border',
+    container: 'popover bs-popover-auto bg-white rounded shadow-lg p-3 border transition',
     arrow: 'popover-arrow position-absolute',
     closeButton: 'btn-close position-absolute top-0 end-0 p-2',
     closeIcon: 'd-none',
@@ -71,28 +62,122 @@ const defaultStyles: Record<Framework, StyleConfig> = {
       danger: 'btn btn-sm btn-danger',
       warning: 'btn btn-sm btn-warning',
       info: 'btn btn-sm btn-primary'
+    },
+    darkMode: {
+      container: 'bg-dark text-light border-secondary',
+      title: 'text-light',
+      message: 'text-light-50',
+      cancelButton: 'btn-dark',
+      confirmButton: {
+        danger: 'btn-outline-danger',
+        warning: 'btn-outline-warning',
+        info: 'btn-outline-primary'
+      }
     }
   },
   none: {
-    container: '',
-    arrow: '',
-    closeButton: '',
-    closeIcon: '',
-    header: '',
-    icon: '',
-    title: '',
-    message: '',
-    footer: '',
-    cancelButton: '',
+    container: "",
+    arrow: "",
+    closeButton: "",
+    closeIcon: "",
+    header: "",
+    icon: "",
+    title: "",
+    message: "",
+    footer: "",
+    cancelButton: "",
     confirmButton: {
-      danger: '',
-      warning: '',
-      info: ''
-    }
-  }
+      danger: "",
+      warning: "",
+      info: "",
+    },
+  },
 };
 
-export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
+const DialogContext = createContext<DialogContextType>({
+  dialogQueue: [],
+  addDialog: () => {},
+  removeDialog: () => {},
+  updateDialog: () => {},
+});
+
+const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
+  const [dialogQueue, setDialogQueue] = useState<DialogState[]>([]);
+
+  const addDialog = (dialog: DialogState) => {
+    setDialogQueue(prev => [...prev, dialog]);
+  };
+
+  const removeDialog = (id: string) => {
+    setDialogQueue(prev => prev.filter(d => d.id !== id));
+  };
+
+  const updateDialog = (id: string, props: Partial<ConfirmationDialogProps>) => {
+    setDialogQueue(prev => 
+      prev.map(d => d.id === id ? { ...d, props: { ...d.props, ...props } } : d)
+    );
+  };
+
+  return (
+    <DialogContext.Provider value={{ dialogQueue, addDialog, removeDialog, updateDialog }}>
+      {children}
+      {dialogQueue.map(dialog => (
+        <Confirmy key={dialog.id} {...dialog.props} />
+      ))}
+    </DialogContext.Provider>
+  );
+};
+
+const useDialog = () => {
+  const context = useContext(DialogContext);
+  if (!context) {
+    throw new Error('useDialog must be used within a DialogProvider');
+  }
+  return context;
+};
+
+const getSizeClasses = (size: DialogSize, framework: Framework) => {
+  if (framework === 'tailwind') {
+    return {
+      sm: 'w-[280px]',
+      md: 'w-[320px]',
+      lg: 'w-[400px]'
+    }[size];
+  }
+  return '';
+};
+
+const getAnimationClasses = (isOpen: boolean, framework: Framework) => {
+  if (framework === 'tailwind') {
+    return isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95';
+  }
+  return '';
+};
+
+const getAnimationStyles = (animation: AnimationConfig, isOpen: boolean, framework: Framework) => {
+  if (framework === 'tailwind') {
+    const baseTransition = `transition-all duration-${animation.duration} ${animation.timing}`;
+    
+    switch (animation.type) {
+      case 'fade':
+        return `${baseTransition} ${isOpen ? 'opacity-100' : 'opacity-0'}`;
+      case 'scale':
+        return `${baseTransition} ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`;
+      case 'slide':
+        return `${baseTransition} transform ${isOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`;
+      case 'none':
+        return '';
+      default:
+        if (animation.customKeyframes) {
+          return animation.customKeyframes;
+        }
+        return '';
+    }
+  }
+  return '';
+};
+
+const Confirmy: React.FC<ConfirmationDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -101,68 +186,65 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   type = 'warning',
+  size = 'md',
+  position = 'top',
   triggerRef,
-  framework = 'tailwind',
+  framework = "tailwind",
   styles = {},
-  className = ''
+  className = '',
+  darkMode = false,
+  customIcon,
+  animation = { type: 'scale', duration: 200, timing: 'ease-out' },
+  zIndex = 50,
+  formFields = [],
+  asyncOptions,
+  stackOrder = 0,
+  nested = false,
+  parentId,
+  children
 }) => {
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLDivElement>(null);
-  const popperInstanceRef = useRef<Instance | null>(null);
+  const {
+    dialogRef,
+    arrowRef,
+    firstFocusableRef,
+    lastFocusableRef,
+    formData,
+    isLoading,
+    status,
+    handleFormChange,
+    handleConfirm,
+  } = useConfirmy({
+    isOpen,
+    onClose,
+    onConfirm,
+    triggerRef,
+    position,
+    formFields,
+    asyncOptions,
+  });
 
   const mergedStyles: StyleConfig = {
     ...defaultStyles[framework],
-    ...styles
+    ...styles,
   };
 
-  useEffect(() => {
-    if (!isOpen || !triggerRef.current || !dialogRef.current) return;
-
-    popperInstanceRef.current = createPopper(triggerRef.current, dialogRef.current, {
-      placement: 'top',
-      modifiers: [
-        {
-          name: 'offset',
-          options: { offset: [0, 8] }
-        },
-        {
-          name: 'arrow',
-          options: {
-            element: arrowRef.current,
-            padding: 5
-          }
-        },
-        {
-          name: 'preventOverflow',
-          options: {
-            padding: 8,
-            altAxis: true
-          }
-        },
-        {
-          name: 'flip',
-          options: {
-            fallbackPlacements: ['bottom', 'right', 'left']
-          }
-        }
-      ]
-    });
-
-    return () => {
-      if (popperInstanceRef.current) {
-        popperInstanceRef.current.destroy();
-        popperInstanceRef.current = null;
-      }
-    };
-  }, [isOpen, triggerRef]);
-
-  useEffect(() => {
-    if (popperInstanceRef.current) {
-      popperInstanceRef.current.update();
-    }
-  }, [message]);
-
   if (!isOpen) return null;
+
+  const getIcon = () => {
+    if (customIcon) return customIcon;
+    switch (type) {
+      case 'danger':
+        return AlertCircle;
+      case 'warning':
+        return AlertTriangle;
+      case 'info':
+        return Info;
+      default:
+        return AlertTriangle;
+    }
+  };
+
+  const Icon = getIcon();
 
   const getIconColor = () => {
     if (framework === 'tailwind') {
@@ -173,52 +255,151 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     return '';
   };
 
-  const handleConfirm = () => {
-    onConfirm();
-    onClose();
+  const renderFormFields = () => {
+    return formFields.map(field => (
+      <div key={field.name} className="mb-4">
+        <label className={`block mb-2 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+          {field.label}
+          {field.required && <span className="text-red-500">*</span>}
+        </label>
+        
+        {field.type === 'text' && (
+          <input
+            type="text"
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={e => handleFormChange(field.name, e.target.value)}
+            className={`w-full px-3 py-2 border rounded-md ${
+              darkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-white border-gray-300'
+            }`}
+          />
+        )}
+        
+        {field.type === 'textarea' && (
+          <textarea
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={e => handleFormChange(field.name, e.target.value)}
+            className={`w-full px-3 py-2 border rounded-md ${
+              darkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-white border-gray-300'
+            }`}
+          />
+        )}
+
+        {field.type === 'select' && field.options && (
+          <select
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={e => handleFormChange(field.name, e.target.value)}
+            className={`w-full px-3 py-2 border rounded-md ${
+              darkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-white border-gray-300'
+            }`}
+          >
+            <option value="">Select an option</option>
+            {field.options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+    ));
   };
 
   return (
-    <div 
+    <div
       ref={dialogRef}
-      className={`${mergedStyles.container} ${className}`}
-      style={{ position: 'absolute' }}
+      className={`
+        ${mergedStyles.container}
+        ${darkMode ? mergedStyles.darkMode?.container || '' : ''}
+        ${getSizeClasses(size, framework)}
+        ${getAnimationStyles(animation, isOpen, framework)}
+        ${className}
+      `}
+      style={{ zIndex }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialog-title"
     >
-      <div
-        ref={arrowRef}
-        className={mergedStyles.arrow}
-        data-popper-arrow
-      />
-
+      <div ref={arrowRef} className={mergedStyles.arrow} />
+      
       <button
-        onClick={onClose}
+        ref={firstFocusableRef}
         className={mergedStyles.closeButton}
-        aria-label="Close"
+        onClick={onClose}
+        aria-label="Close dialog"
       >
         <X className={mergedStyles.closeIcon} />
       </button>
 
       <div className={mergedStyles.header}>
-        <AlertCircle className={`${mergedStyles.icon} ${getIconColor()}`} />
-        <h3 className={mergedStyles.title}>{title}</h3>
+        <Icon className={`${mergedStyles.icon} ${getIconColor()}`} />
+        <h3
+          id="dialog-title"
+          className={`${mergedStyles.title} ${darkMode ? mergedStyles.darkMode?.title || '' : ''}`}
+        >
+          {title}
+        </h3>
       </div>
 
-      <p className={mergedStyles.message}>{message}</p>
+      <p className={`${mergedStyles.message} ${darkMode ? mergedStyles.darkMode?.message || '' : ''}`}>
+        {message}
+      </p>
+
+      {formFields.length > 0 && renderFormFields()}
+
+      {status === 'loading' && asyncOptions?.loadingText && (
+        <p className="text-sm text-gray-500 mb-2">{asyncOptions.loadingText}</p>
+      )}
+      {status === 'error' && asyncOptions?.errorText && (
+        <p className="text-sm text-red-500 mb-2">{asyncOptions.errorText}</p>
+      )}
+      {status === 'success' && asyncOptions?.successText && (
+        <p className="text-sm text-green-500 mb-2">{asyncOptions.successText}</p>
+      )}
 
       <div className={mergedStyles.footer}>
         <button
+          className={`${mergedStyles.cancelButton} ${darkMode ? mergedStyles.darkMode?.cancelButton || '' : ''}`}
           onClick={onClose}
-          className={mergedStyles.cancelButton}
+          disabled={isLoading}
         >
           {cancelText}
         </button>
         <button
+          ref={lastFocusableRef}
+          className={`${mergedStyles.confirmButton[type]} ${darkMode ? mergedStyles.darkMode?.confirmButton?.[type] || '' : ''}`}
           onClick={handleConfirm}
-          className={mergedStyles.confirmButton[type]}
+          disabled={isLoading}
         >
           {confirmText}
         </button>
       </div>
+
+      {children}
     </div>
   );
 };
+
+export { useConfirmy } from './hooks/useConfirmy';
+export { Confirmy } from './components/Confirmy';
+export { DialogProvider, useDialog } from './components/DialogContext';
+export type {
+  DialogType,
+  Framework,
+  DialogSize,
+  DialogPosition,
+  StyleConfig,
+  ConfirmationDialogProps,
+  DialogProviderProps,
+  DialogContextType,
+  AnimationConfig,
+  DialogFormField
+} from '../types';
