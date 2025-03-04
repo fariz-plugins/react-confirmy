@@ -25,7 +25,8 @@
     "watch": "rollup -c --watch",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "prepublishOnly": "npm run lint && npm run build"
+    "prepublishOnly": "npm run lint && npm run build",
+    "release": "release-please release-pr --repo-url=https://github.com/fariz-plugins/react-confirmy"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
@@ -53,6 +54,7 @@
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
+    "release-please": "^16.18.0",
     "rollup": "^4.34.8",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
@@ -66,11 +68,23 @@
   "keywords": [
     "react",
     "confirmation",
+    "confirm",
+    "react confirm",
     "dialog",
     "modal",
     "popup",
+    "confirmation-dialog",
+    "react-component",
+    "react-modal",
+    "react-dialog",
+    "react-popup",
     "tailwind",
-    "bootstrap"
+    "bootstrap",
+    "typescript",
+    "alert",
+    "prompt",
+    "ui-component",
+    "react-ui"
   ],
   "author": "M Mohamed Fariz",
   "license": "MIT",
