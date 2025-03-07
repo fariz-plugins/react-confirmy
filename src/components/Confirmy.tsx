@@ -1,5 +1,5 @@
 import React from 'react';
-import { X } from 'lucide-react';
+import { XIcon } from './icons';
 import type { ConfirmationDialogProps } from '../types';
 import { useConfirmy } from '../hooks/useConfirmy';
 import { defaultStyles } from './styles';
@@ -112,7 +112,7 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
         className={mergedStyles.closeButton}
         aria-label="Close dialog"
       >
-        <X className={mergedStyles.closeIcon} />
+        <XIcon className={mergedStyles.closeIcon} />
       </button>
 
       <div className={mergedStyles.header}>

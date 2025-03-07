@@ -1,6 +1,11 @@
-// Export components and hooks for external use
+// Components
 export { Confirmy } from './components/Confirmy';
 export { DialogProvider, useDialog } from './components/DialogContext';
+
+// Hooks
+export { useConfirmy } from './hooks/useConfirmy';
+
+// Types
 export type {
   DialogType,
   Framework,
@@ -10,6 +15,9 @@ export type {
   ConfirmationDialogProps,
   DialogProviderProps,
   DialogContextType,
+  DialogState,
+  DialogFormField,
+  AsyncConfirmOptions,
   AnimationConfig,
-  DialogFormField
-} from '../types';
+  TransitionTiming
+} from './types';

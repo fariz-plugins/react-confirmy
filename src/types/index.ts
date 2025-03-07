@@ -1,5 +1,25 @@
 import { ReactNode } from 'react';
 
+export type DialogType = 'info' | 'warning' | 'danger';
+export type DialogSize = 'sm' | 'md' | 'lg';
+export type DialogPosition = 'top' | 'center' | 'bottom';
+export type Framework = 'tailwind' | 'bootstrap' | 'none';
+export type TransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+
+export interface AnimationConfig {
+  type: 'fade' | 'scale' | 'slide' | 'none';
+  duration: number;
+  timing: TransitionTiming;
+  customKeyframes?: string;
+}
+
+export interface AsyncConfirmOptions {
+  loadingText?: string;
+  successText?: string;
+  errorText?: string;
+  showLoadingSpinner?: boolean;
+}
+
 export interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -9,15 +29,19 @@ export interface ConfirmationDialogProps {
   message?: string;
   confirmText?: string;
   cancelText?: string;
-  type?: 'info' | 'warning' | 'danger';
+  type?: DialogType;
+  size?: DialogSize;
+  position?: DialogPosition;
   framework?: Framework;
   styles?: Partial<StyleConfig>;
   className?: string;
   darkMode?: boolean;
   customIcon?: React.ComponentType<any>;
+  animation?: AnimationConfig;
   zIndex?: number;
   formFields?: DialogFormField[];
-  position?: 'top' | 'center' | 'bottom';
+  asyncOptions?: AsyncConfirmOptions;
+  stackOrder?: number;
 }
 
 export interface DialogState {
@@ -35,8 +59,6 @@ export interface DialogContextType {
 export interface DialogProviderProps {
   children: ReactNode;
 }
-
-export type Framework = 'tailwind' | 'bootstrap' | 'none';
 
 export interface StyleConfig {
   container: string;

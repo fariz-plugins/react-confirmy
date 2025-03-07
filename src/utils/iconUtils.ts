@@ -1,4 +1,4 @@
-import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import { AlertCircleIcon, AlertTriangleIcon, InfoIcon } from '../components/icons';
 import type { DialogType, Framework } from '../../types';
 import { ComponentType } from 'react';
 
@@ -9,13 +9,13 @@ export const getDialogIcon = (type: DialogType, customIcon?: ComponentType<any>)
   if (customIcon) return customIcon;
   switch (type) {
     case 'danger':
-      return AlertCircle;
+      return AlertCircleIcon;
     case 'warning':
-      return AlertTriangle;
+      return AlertTriangleIcon;
     case 'info':
-      return Info;
+      return InfoIcon;
     default:
-      return AlertTriangle;
+      return AlertTriangleIcon;
   }
 };
 
