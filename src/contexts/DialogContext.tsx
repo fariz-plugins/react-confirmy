@@ -1,35 +1,31 @@
 import React, { createContext, useState } from 'react';
-import type { DialogContextType, DialogProviderProps, DialogState, ConfirmationDialogProps } from '../../types';
+import type { DialogContextType, DialogProviderProps, DialogState, ConfirmationDialogProps } from '../types';
 import { Confirmy } from '../components/Confirmy';
 
 /**
- * Context for managing dialog state across the application
+ * Context for managing dialog state and queue
  */
-export const DialogContext = createContext<DialogContextType>({
-  dialogQueue: [],
-  addDialog: () => {},
-  removeDialog: () => {},
-  updateDialog: () => {},
-});
+export const DialogContext = createContext<DialogContextType | undefined>(undefined);
 
-/**
- * Provider component that manages dialog state and renders active dialogs
- */
-export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
+export function DialogProvider({ children }: DialogProviderProps) {
   const [dialogQueue, setDialogQueue] = useState<DialogState[]>([]);
 
-  const addDialog = (dialog: DialogState) => {
+  const addDialog = (props: ConfirmationDialogProps) => {
+    const dialog: DialogState = {
+      id: Math.random().toString(36).substr(2, 9),
+      props
+    };
     setDialogQueue(prev => [...prev, dialog]);
   };
 
   const removeDialog = (id: string) => {
-    setDialogQueue(prev => prev.filter(d => d.id !== id));
+    setDialogQueue(prev => prev.filter(dialog => dialog.id !== id));
   };
 
   const updateDialog = (id: string, props: Partial<ConfirmationDialogProps>) => {
-    setDialogQueue(prev => 
-      prev.map(d => d.id === id ? { ...d, props: { ...d.props, ...props } } : d)
-    );
+    setDialogQueue(prev => prev.map(dialog => 
+      dialog.id === id ? { ...dialog, props: { ...dialog.props, ...props } } : dialog
+    ));
   };
 
   return (
@@ -40,4 +36,4 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({ children }) => {
       ))}
     </DialogContext.Provider>
   );
-};
+}
