@@ -17,7 +17,7 @@ A beautiful, customizable, and accessible confirmation dialog component for Reac
 - 🌙 Dark mode support
 - 📏 Multiple size variants (sm, md, lg)
 - 🎯 Custom positioning (top, bottom, left, right)
-- 🖼️ Custom icon support with Lucide icons
+- 🖼️ Built-in SVG icons with custom icon support
 - ✨ Multiple animation types (fade, scale, slide)
 - 📝 Form support with validation
 - ⏳ Async operations with loading states
@@ -38,7 +38,7 @@ npm install react-confirmy
 
 ```jsx
 import { useRef } from 'react';
-import { ConfirmationDialog, DialogProvider } from 'react-confirmy';
+import { Confirmy, DialogProvider } from 'react-confirmy';
 
 function App() {
   const buttonRef = useRef(null);
@@ -50,7 +50,7 @@ function App() {
         Delete Item
       </button>
 
-      <ConfirmationDialog
+      <Confirmy
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
@@ -73,31 +73,17 @@ function App() {
 - `react` (^18.0.0): Core React library
 - `react-dom` (^18.0.0): React DOM rendering
 - `@popperjs/core` (^2.11.8): Handles positioning of the dialog
-- `lucide-react` (^0.344.0): Provides icons for the dialog
 
-### CSS Framework Dependencies (Optional)
-Choose one:
+### Framework Support
+The library supports multiple CSS frameworks out of the box:
+- Tailwind CSS (default)
+- Bootstrap
+- Framework-agnostic option ('none')
 
-1. **Tailwind CSS** (Default)
-   ```bash
-   npm install -D tailwindcss postcss autoprefixer
-   npx tailwindcss init -p
-   ```
-   Add to your CSS:
-   ```css
-   @tailwind base;
-   @tailwind components;
-   @tailwind utilities;
-   ```
-
-2. **Bootstrap**
-   ```bash
-   npm install bootstrap
-   ```
-   Import in your entry file:
-   ```javascript
-   import 'bootstrap/dist/css/bootstrap.min.css';
-   ```
+Select your preferred framework using the `framework` prop:
+```jsx
+<Confirmy framework="tailwind" /> // or "bootstrap" or "none"
+```
 
 ## Props
 
@@ -118,7 +104,7 @@ Choose one:
 | `styles` | Partial<StyleConfig> | {} | Custom styles override |
 | `className` | string | '' | Additional CSS classes |
 | `darkMode` | boolean | false | Enables dark mode |
-| `customIcon` | LucideIcon | undefined | Custom icon component from lucide-react |
+| `customIcon` | React.ComponentType<DialogIconProps> | undefined | Custom icon component |
 | `animation` | AnimationConfig | { type: 'scale', duration: 200, timing: 'ease-out' } | Animation configuration |
 | `zIndex` | number | 50 | Sets the z-index of the dialog |
 | `formFields` | DialogFormField[] | [] | Form fields configuration |
@@ -134,7 +120,7 @@ Choose one:
 Configure custom animations with the `animation` prop:
 
 ```jsx
-<ConfirmationDialog
+<Confirmy
   animation={{
     type: 'fade', // 'fade' | 'scale' | 'slide' | 'none'
     duration: 200,
@@ -177,7 +163,7 @@ const formFields = [
   }
 ];
 
-<ConfirmationDialog
+<Confirmy
   formFields={formFields}
   onConfirm={(data) => {
     console.log('Form data:', data);
@@ -191,7 +177,7 @@ const formFields = [
 Handle async operations with loading and status states:
 
 ```jsx
-<ConfirmationDialog
+<Confirmy
   onConfirm={async () => {
     await someAsyncOperation();
   }}
@@ -199,185 +185,68 @@ Handle async operations with loading and status states:
     loadingText: 'Processing...',
     successText: 'Success!',
     errorText: 'Error occurred',
-    timeout: 3000
+    showLoadingSpinner: true
   }}
   // ... other props
 />
 ```
 
-### Dialog Queue
+### Custom Icons
 
-Use the `DialogProvider` and `useDialog` hook to manage multiple dialogs:
+Use your own icons or the built-in SVG icons:
 
 ```jsx
-import { DialogProvider, useDialog } from 'react-confirmy';
+// Using built-in icons (default)
+<Confirmy type="warning" />
 
-function DialogManager() {
-  const { addDialog, removeDialog, updateDialog } = useDialog();
+// Using custom icon
+const CustomIcon = ({ width = 24, height = 24, color = 'currentColor' }) => (
+  <svg width={width} height={height} fill={color}>
+    {/* Your SVG path */}
+  </svg>
+);
+
+<Confirmy customIcon={CustomIcon} />
+```
+
+### Dialog Queuing
+
+Handle multiple dialogs with the queuing system:
+
+```jsx
+import { useDialog } from 'react-confirmy';
+
+function MyComponent() {
+  const { addDialog } = useDialog();
 
   const showDialogs = () => {
+    // First dialog
     addDialog({
-      id: 'dialog-1',
-      props: {
-        isOpen: true,
-        title: 'First Dialog',
-        onConfirm: () => {
-          // Show next dialog
-          addDialog({
-            id: 'dialog-2',
-            props: {
-              isOpen: true,
-              title: 'Second Dialog',
-              // ... other props
-            }
-          });
-        }
-        // ... other props
+      title: 'First Action',
+      message: 'Confirm first action?',
+      onConfirm: () => {
+        // Second dialog will show after first is confirmed
+        addDialog({
+          title: 'Second Action',
+          message: 'Proceed with second action?',
+          type: 'warning'
+        });
       }
     });
   };
 
-  return (
-    <button onClick={showDialogs}>
-      Show Dialogs
-    </button>
-  );
-}
-
-function App() {
-  return (
-    <DialogProvider>
-      <DialogManager />
-    </DialogProvider>
-  );
+  return <button onClick={showDialogs}>Start Process</button>;
 }
 ```
-
-### Nested Dialogs
-
-Create nested dialogs with proper stacking and focus management:
-
-```jsx
-<ConfirmationDialog
-  isOpen={isOpen}
-  // ... other props
->
-  <button onClick={() => setNestedOpen(true)}>
-    Open Nested Dialog
-  </button>
-  <ConfirmationDialog
-    isOpen={nestedOpen}
-    nested={true}
-    parentId="parent-dialog"
-    stackOrder={1}
-    // ... other props
-  />
-</ConfirmationDialog>
-```
-
-## Style Customization
-
-### Framework-specific Styles
-
-1. **Tailwind CSS**
-```jsx
-<ConfirmationDialog
-  framework="tailwind"
-  styles={{
-    container: 'bg-white dark:bg-gray-800 rounded-lg shadow-xl',
-    title: 'text-xl font-semibold text-gray-900 dark:text-white',
-    message: 'text-gray-600 dark:text-gray-300',
-    confirmButton: {
-      danger: 'bg-red-600 hover:bg-red-700',
-      warning: 'bg-yellow-600 hover:bg-yellow-700',
-      info: 'bg-blue-600 hover:bg-blue-700'
-    }
-  }}
-/>
-```
-
-2. **Bootstrap**
-```jsx
-<ConfirmationDialog
-  framework="bootstrap"
-  styles={{
-    container: 'modal-content',
-    title: 'modal-title',
-    message: 'modal-body',
-    confirmButton: {
-      danger: 'btn btn-danger',
-      warning: 'btn btn-warning',
-      info: 'btn btn-info'
-    }
-  }}
-/>
-```
-
-3. **Framework Agnostic**
-```jsx
-<ConfirmationDialog
-  framework="none"
-  styles={{
-    container: 'your-container-class',
-    title: 'your-title-class',
-    message: 'your-message-class',
-    confirmButton: {
-      danger: 'your-danger-button-class',
-      warning: 'your-warning-button-class',
-      info: 'your-info-button-class'
-    }
-  }}
-/>
-```
-
-## Accessibility Features
-
-React Confirmy is built with accessibility in mind:
-
-- ♿️ WAI-ARIA compliant dialog implementation
-- ⌨️ Full keyboard navigation support
-  - Tab: Navigate through focusable elements
-  - Shift+Tab: Navigate backwards
-  - Escape: Close dialog
-  - Enter/Space: Activate buttons
-- 🔍 Focus trap within the dialog
-- 📢 Screen reader announcements for status changes
-- 🎯 Proper focus management
-  - Focus restored to trigger element on close
-  - Nested dialog focus handling
-- 🎨 High contrast mode support
-- 📱 Touch device support
 
 ## TypeScript Support
 
-React Confirmy is written in TypeScript and provides comprehensive type definitions:
-
-```typescript
-import type {
-  ConfirmationDialogProps,
-  DialogFormField,
-  AsyncConfirmOptions,
-  StyleConfig,
-  AnimationConfig
-} from 'react-confirmy';
-```
+The library is written in TypeScript and includes comprehensive type definitions. All components, hooks, and utilities are fully typed.
 
 ## Contributing
 
-We welcome contributions! Here's how you can help:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-Please ensure your PR adheres to the following guidelines:
-- Follow the existing code style
-- Add tests for any new functionality
-- Update documentation as needed
-- Keep PR size reasonable
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT © [M Mohamed Fariz](https://github.com/fariz-plugins)
+MIT 
