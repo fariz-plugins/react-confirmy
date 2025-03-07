@@ -1,6 +1,7 @@
 import React from 'react';
+import { DialogIconProps } from '../../types';
 
-export const XIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const XIcon: React.FC<DialogIconProps> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -18,7 +19,7 @@ export const XIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-export const AlertCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const AlertCircleIcon: React.FC<DialogIconProps> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -37,7 +38,7 @@ export const AlertCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
   </svg>
 );
 
-export const AlertTriangleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const AlertTriangleIcon: React.FC<DialogIconProps> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -56,7 +57,7 @@ export const AlertTriangleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props
   </svg>
 );
 
-export const InfoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const InfoIcon: React.FC<DialogIconProps> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -75,7 +76,7 @@ export const InfoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-export const CopyIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+export const CopyIcon: React.FC<DialogIconProps> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"

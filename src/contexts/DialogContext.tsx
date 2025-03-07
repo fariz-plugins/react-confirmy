@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import type { DialogContextType, DialogProviderProps, DialogState, ConfirmationDialogProps } from '../../types';
 import { Confirmy } from '../components/Confirmy';
 

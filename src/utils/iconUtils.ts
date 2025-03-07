@@ -1,22 +1,21 @@
 import { AlertCircleIcon, AlertTriangleIcon, InfoIcon } from '../components/icons';
-import type { DialogType, Framework } from '../../types';
+import type { DialogType, Framework, DialogIconProps } from '../types';
 import { ComponentType } from 'react';
 
 /**
  * Get the appropriate icon component based on dialog type
  */
-export const getDialogIcon = (type: DialogType, customIcon?: ComponentType<any>) => {
-  if (customIcon) return customIcon;
-  switch (type) {
-    case 'danger':
-      return AlertCircleIcon;
-    case 'warning':
-      return AlertTriangleIcon;
-    case 'info':
-      return InfoIcon;
-    default:
-      return AlertTriangleIcon;
+const iconMap: Record<DialogType, ComponentType<DialogIconProps>> = {
+  info: InfoIcon,
+  warning: AlertTriangleIcon,
+  danger: AlertCircleIcon,
+};
+
+export const getDialogIcon = (type: DialogType, customIcon?: ComponentType<DialogIconProps>) => {
+  if (customIcon) {
+    return customIcon;
   }
+  return iconMap[type] || InfoIcon;
 };
 
 /**

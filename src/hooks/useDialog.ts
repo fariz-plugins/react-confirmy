@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { DialogContext } from '../context/DialogContext';
+import { DialogContext } from '../contexts/DialogContext';
 
 /**
  * Hook for accessing dialog context and its methods
