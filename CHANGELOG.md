@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2025-03-08
+
+### Changed
+- **Dependencies**
+  - Removed `lucide-react` dependency
+  - Replaced with built-in SVG icons for better bundle size
+
+### Improved
+- **Code Organization**
+  - Moved DialogContext to dedicated contexts directory
+  - Separated DialogProvider and useDialog into their own files
+  - Updated exports in index.ts to maintain centralized exports
+  - Followed Dialog prefix naming convention for types
+  - Fixed Fast Refresh warning by separating component exports
+
+### Fixed
+- TypeScript type definitions and import paths
+- Component organization following project guidelines
+
 ## [1.0.0] - 2025-03-04
 
 ### Features
@@ -63,4 +82,3 @@ All notable changes to this project will be documented in this file.
 - React >=18.0.0
 - React DOM >=18.0.0
 - @popperjs/core ^2.11.8
-- lucide-react ^0.344.0

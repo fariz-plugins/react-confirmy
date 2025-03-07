@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, SVGProps } from 'react';
 
 export type DialogType = 'info' | 'warning' | 'danger';
 export type DialogSize = 'sm' | 'md' | 'lg';
@@ -20,6 +20,12 @@ export interface AsyncConfirmOptions {
   showLoadingSpinner?: boolean;
 }
 
+export interface DialogIconProps extends SVGProps<SVGSVGElement> {
+  width?: number;
+  height?: number;
+  color?: string;
+}
+
 export interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,7 +42,7 @@ export interface ConfirmationDialogProps {
   styles?: Partial<StyleConfig>;
   className?: string;
   darkMode?: boolean;
-  customIcon?: React.ComponentType<any>;
+  customIcon?: React.ComponentType<DialogIconProps>;
   animation?: AnimationConfig;
   zIndex?: number;
   formFields?: DialogFormField[];

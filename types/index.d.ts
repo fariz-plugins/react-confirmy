@@ -22,7 +22,7 @@ export interface DialogFormField {
   required?: boolean;
   placeholder?: string;
   options?: { label: string; value: string }[];
-  validation?: (value: any) => string | undefined;
+validation?: (value: string | number | boolean | string[] | null | undefined) => string | undefined;
 }
 
 export interface AsyncConfirmOptions {
@@ -65,7 +65,7 @@ export interface ConfirmationDialogProps {
   children?: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (formData?: Record<string, any>) => void | Promise<void>;
+onConfirm: (formData?: Record<string, string | number | boolean | string[] | null | undefined>) => void | Promise<void>;
   title?: string;
   message?: string;
   confirmText?: string;
