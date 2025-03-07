@@ -3,55 +3,61 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
-import terser  from '@rollup/plugin-terser';
+import terser from '@rollup/plugin-terser';
 import { dts } from "rollup-plugin-dts";
 
-export default [
-    // Bundle for CommonJS & ESM
+const config = [
     {
-        input: 'src/index.ts',  
+        input: 'src/index.ts',
         output: [
-            {
-                file: 'dist/index.cjs',
-                format: 'cjs',
-                exports: "named",
-                sourcemap: true,
-            },
             {
                 file: 'dist/index.js',
                 format: 'esm',
                 sourcemap: true,
             },
             {
-                file: "dist/index.umd.js",
-                format: "umd",
-                name: "ReactConfirmation", // Global variable in browser
-                globals: {
-                  react: "React",
-                  "react-dom": "ReactDOM",
-                  "react/jsx-runtime": "ReactJSXRuntime"
-                },
+                file: 'dist/index.cjs',
+                format: 'cjs',
                 sourcemap: true,
             },
+            {
+                file: 'dist/index.umd.js',
+                format: 'umd',
+                name: 'ReactConfirmy',
+                globals: {
+                    react: 'React',
+                    'react-dom': 'ReactDOM',
+                    '@popperjs/core': 'Popper'
+                },
+                sourcemap: true,
+            }
         ],
         plugins: [
             peerDepsExternal(),
             resolve(),
             commonjs(),
-            typescript({ tsconfig: './tsconfig.json', declaration: false, emitDeclarationOnly: false, }),
-            postcss({
-                extract: 'dist/styles.css', // Extract CSS to a separate file
-                modules: true,
+            typescript({
+                tsconfig: './tsconfig.json',
+                declaration: true,
+                declarationDir: './dist/types',
+                rootDir: './src',
+                exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx']
             }),
-            terser(),
+            postcss({
+                extract: 'dist/styles.css',
+                modules: true,
+                minimize: true
+            }),
+            terser()
         ],
-        external: ['react', 'react-dom','react/jsx-runtime'],
+        external: ['react', 'react-dom', '@popperjs/core']
     },
-
-    // Generate TypeScript Declarations
     {
-        input: 'src/index.ts',
-        output: [{ file: 'dist/types/index.d.ts', format: 'esm' }],
+        input: 'dist/types/index.d.ts',
+        output: [{ file: 'dist/index.d.ts', format: 'esm' }],
         plugins: [dts()],
+        external: [/\.css$/]
     }
 ];
+
+export default config;

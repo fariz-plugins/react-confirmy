@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Confirmy, DialogProvider, useDialog } from './index';
-import { Copy } from 'lucide-react';
+import { CopyIcon } from './components/icons';
 
 const Header = () => (
   <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white py-16">
@@ -17,7 +17,7 @@ const Header = () => (
             onClick={() => navigator.clipboard.writeText('npm install react-confirmy')}
             className="flex items-center gap-2 px-3 py-1 bg-white bg-opacity-10 rounded hover:bg-opacity-20"
           >
-            <Copy size={16} /> Copy
+            <CopyIcon width={16} height={16} /> Copy
           </button>
         </div>
         <div className="space-y-4">
@@ -130,7 +130,6 @@ const QueueDemo = () => {
 
   const showQueuedDialogs = () => {
     addDialog({
-      component: Confirmy,
       isOpen: true,
       triggerRef: buttonRef,
       title: "First Action",
@@ -142,7 +141,6 @@ const QueueDemo = () => {
     });
 
     addDialog({
-      component: Confirmy,
       isOpen: true,
       triggerRef: buttonRef,
       title: "Second Action",
@@ -172,7 +170,6 @@ const QueueDemo = () => {
 
   const showQueuedDialogs = () => {
     addDialog({
-      component: Confirmy,
       isOpen: true,
       triggerRef: buttonRef,
       title: "First Action",
@@ -182,7 +179,6 @@ const QueueDemo = () => {
     });
 
     addDialog({
-      component: Confirmy,
       isOpen: true,
       triggerRef: buttonRef,
       title: "Second Action",
