@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2025-03-08
+[docs: update documentation]
+- Remove framework installation steps from README
+- Simplify framework support section
+- Add version 1.0.3 changes to CHANGELOG
+- Update dependencies list
+- Remove lucide-react references
+
 ## [1.0.2] - 2025-03-08
 
 ### Changed

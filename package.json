@@ -1,6 +1,6 @@
 {
   "name": "react-confirmy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -94,7 +94,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fariz-plugins/react-confirmy"
+    "url": "git+https://github.com/fariz-plugins/react-confirmy.git"
   },
   "bugs": {
     "url": "https://github.com/fariz-plugins/react-confirmy/issues"
