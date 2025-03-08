@@ -1,4 +1,4 @@
-import { Framework, AnimationConfig } from '../types';
+import { Framework, DialogAnimationConfig } from '../types';
 
 export const getAnimationClasses = (isOpen: boolean, framework: Framework): string => {
   switch (framework) {
@@ -12,8 +12,7 @@ export const getAnimationClasses = (isOpen: boolean, framework: Framework): stri
 };
 
 export const getAnimationStyles = (
-  animation: AnimationConfig,
-  isOpen: boolean,
+  animation: DialogAnimationConfig,
   framework: Framework
 ): React.CSSProperties => {
   const { duration = 200, timing = 'ease-out' } = animation;

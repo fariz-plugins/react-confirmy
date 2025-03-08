@@ -6,14 +6,14 @@ export type DialogPosition = 'top' | 'center' | 'bottom';
 export type Framework = 'tailwind' | 'bootstrap' | 'none';
 export type TransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
 
-export interface AnimationConfig {
+export interface DialogAnimationConfig {
   type: 'fade' | 'scale' | 'slide' | 'none';
   duration: number;
   timing: TransitionTiming;
   customKeyframes?: string;
 }
 
-export interface AsyncConfirmOptions {
+export interface DialogAsyncOptions {
   loadingText?: string;
   successText?: string;
   errorText?: string;
@@ -26,11 +26,11 @@ export interface DialogIconProps extends SVGProps<SVGSVGElement> {
   color?: string;
 }
 
-export interface ConfirmationDialogProps {
+export interface DialogConfirmationProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
-  triggerRef?: React.RefObject<HTMLElement>;
+  triggerRef?: React.RefObject<HTMLElement>;  // Optional for fixed positioning
   title?: string;
   message?: string;
   confirmText?: string;
@@ -39,34 +39,34 @@ export interface ConfirmationDialogProps {
   size?: DialogSize;
   position?: DialogPosition;
   framework?: Framework;
-  styles?: Partial<StyleConfig>;
+  styles?: Partial<DialogStyleConfig>;
   className?: string;
   darkMode?: boolean;
   customIcon?: React.ComponentType<DialogIconProps>;
-  animation?: AnimationConfig;
+  animation?: DialogAnimationConfig;
   zIndex?: number;
   formFields?: DialogFormField[];
-  asyncOptions?: AsyncConfirmOptions;
+  asyncOptions?: DialogAsyncOptions;
   stackOrder?: number;
 }
 
 export interface DialogState {
   id: string;
-  props: ConfirmationDialogProps;
+  props: DialogConfirmationProps;
 }
 
 export interface DialogContextType {
   dialogQueue: DialogState[];
-  addDialog: (props: ConfirmationDialogProps) => void;
+  addDialog: (props: DialogConfirmationProps) => void;
   removeDialog: (id: string) => void;
-  updateDialog: (id: string, props: Partial<ConfirmationDialogProps>) => void;
+  updateDialog: (id: string, props: Partial<DialogConfirmationProps>) => void;
 }
 
 export interface DialogProviderProps {
   children: ReactNode;
 }
 
-export interface StyleConfig {
+export interface DialogStyleConfig {
   container: string;
   arrow: string;
   closeButton: string;

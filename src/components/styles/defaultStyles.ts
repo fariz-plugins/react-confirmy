@@ -1,9 +1,9 @@
-import type { Framework, StyleConfig } from '../../types';
+import { Framework, DialogStyleConfig } from "../../types";
 
-export const defaultStyles: Record<Framework, StyleConfig> = {
+export const defaultStyles: Record<Framework, DialogStyleConfig> = {
   tailwind: {
     container: 'z-50 bg-white rounded-lg shadow-xl p-4 border border-gray-200 transition-all duration-200',
-    arrow: 'absolute w-2 h-2',
+    arrow: 'absolute bg-white w-2 h-2 rotate-45 border border-gray-200 -z-[1]',
     closeButton: 'absolute right-2 top-2 text-gray-400 hover:text-gray-500',
     closeIcon: 'w-4 h-4',
     header: 'flex items-center gap-2 mb-3',
@@ -58,20 +58,20 @@ export const defaultStyles: Record<Framework, StyleConfig> = {
     }
   },
   none: {
-    container: "",
-    arrow: "",
-    closeButton: "",
-    closeIcon: "",
-    header: "",
-    icon: "",
-    title: "",
-    message: "",
-    footer: "",
-    cancelButton: "",
+    container: '',
+    arrow: '',
+    closeButton: '',
+    closeIcon: '',
+    header: '',
+    icon: '',
+    title: '',
+    message: '',
+    footer: '',
+    cancelButton: '',
     confirmButton: {
-      danger: "",
-      warning: "",
-      info: "",
-    },
-  },
+      danger: '',
+      warning: '',
+      info: ''
+    }
+  }
 };

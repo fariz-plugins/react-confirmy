@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { DialogProviderProps, DialogState, ConfirmationDialogProps } from '../types';
-import { DialogContext } from '../contexts/DialogContext';
+import { DialogContext } from './contexts/DialogContext';
 
 export function DialogProvider({ children }: DialogProviderProps) {
   const [dialogQueue, setDialogQueue] = useState<DialogState[]>([]);
