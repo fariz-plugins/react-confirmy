@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { Confirmy, DialogProvider, useDialog } from './index';
 import { CopyIcon } from './components/icons';
+import './components/styles/confirmStyles.css';
 
 const Header = () => (
-  <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white py-16">
+  <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white py-16 text-center">
     <div className="container mx-auto px-4">
       <h1 className="text-5xl font-bold mb-4">React Confirmy</h1>
       <p className="text-xl mb-8 opacity-90">
         A beautiful, customizable confirmation dialog component for React applications
       </p>
       
-      <div className="bg-black bg-opacity-50 p-6 rounded-lg max-w-2xl">
+      <div className="bg-black bg-opacity-50 p-6 rounded-lg max-w-2xl m-auto inset-shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Installation</h2>
           <button 
@@ -25,6 +26,12 @@ const Header = () => (
             <p className="text-sm opacity-70 mb-2">Using npm:</p>
             <code className="bg-black bg-opacity-50 px-4 py-2 rounded block">
               npm install react-confirmy
+            </code>
+          </div>
+          <div>
+            <p className="text-sm opacity-70 mb-2">Using pnpm:</p>
+            <code className="bg-black bg-opacity-50 px-4 py-2 rounded block">
+              pnpm install react-confirmy
             </code>
           </div>
           <div>
@@ -84,6 +91,7 @@ const BasicDialog = () => {
       <Confirmy
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        framework='none'
         onConfirm={() => setIsOpen(false)}
         triggerRef={buttonRef}
         title="Basic Dialog"
@@ -123,79 +131,6 @@ const BasicDialog = () => {
 };
 `;
 
-// Queue Demo Component
-const QueueDemo = () => {
-  const { addDialog } = useDialog();
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const showQueuedDialogs = () => {
-    addDialog({
-      isOpen: true,
-      triggerRef: buttonRef,
-      title: "First Action",
-      message: "This is the first dialog in the queue",
-      type: "info",
-      onClose: () => console.log("First dialog closed"),
-      onConfirm: () => console.log("First dialog confirmed"),
-      position: "bottom"
-    });
-
-    addDialog({
-      isOpen: true,
-      triggerRef: buttonRef,
-      title: "Second Action",
-      message: "This is the second dialog in the queue",
-      type: "warning",
-      onClose: () => console.log("Second dialog closed"),
-      onConfirm: () => console.log("Second dialog confirmed"),
-      position: "bottom"
-    });
-  };
-
-  return (
-    <button
-      ref={buttonRef}
-      onClick={showQueuedDialogs}
-      className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-    >
-      Show Queue
-    </button>
-  );
-};
-
-const queueDemoCode = `
-const QueueDemo = () => {
-  const { addDialog } = useDialog();
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const showQueuedDialogs = () => {
-    addDialog({
-      isOpen: true,
-      triggerRef: buttonRef,
-      title: "First Action",
-      message: "First dialog in queue",
-      type: "info",
-      position: "bottom"
-    });
-
-    addDialog({
-      isOpen: true,
-      triggerRef: buttonRef,
-      title: "Second Action",
-      message: "Second dialog in queue",
-      type: "warning",
-      position: "bottom"
-    });
-  };
-
-  return (
-    <button ref={buttonRef} onClick={showQueuedDialogs}>
-      Show Queue
-    </button>
-  );
-};
-`;
-
 const App = () => {
   return (
     <DialogProvider>
@@ -211,13 +146,7 @@ const App = () => {
             <BasicDialog />
           </DemoSection>
 
-          <DemoSection 
-            title="Dialog Queue" 
-            description="Show multiple dialogs in sequence using the dialog queue system"
-            code={queueDemoCode}
-          >
-            <QueueDemo />
-          </DemoSection>
+        
         </div>
 
         {/* Props Table at the bottom */}
