@@ -4,12 +4,12 @@ export type DialogType = 'info' | 'warning' | 'danger';
 export type DialogSize = 'sm' | 'md' | 'lg';
 export type DialogPosition = 'top' | 'center' | 'bottom';
 export type Framework = 'tailwind' | 'bootstrap' | 'none';
-export type TransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+export type DialogTransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
 
 export interface DialogAnimationConfig {
   type: 'fade' | 'scale' | 'slide' | 'none';
   duration: number;
-  timing: TransitionTiming;
+  timing: DialogTransitionTiming;
   customKeyframes?: string;
 }
 
