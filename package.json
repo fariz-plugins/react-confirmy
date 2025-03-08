@@ -23,6 +23,7 @@
     "dev": "vite",
     "build": "rollup -c",
     "watch": "rollup -c --watch",
+    "vite:build": "vite build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky install",
