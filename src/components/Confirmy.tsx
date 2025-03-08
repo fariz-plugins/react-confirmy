@@ -1,25 +1,12 @@
 import { useState } from 'react';
-import { XIcon, AlertCircleIcon, AlertTriangleIcon, InfoIcon } from './icons';
-import type { DialogConfirmationProps, DialogType, DialogIconProps, DialogStyleConfig } from '../types';
+import type { DialogConfirmationProps, } from '../types';
+import { XIcon } from './icons';
 import { useConfirmy } from './hooks/useConfirmy';
 import { useDialogPosition } from './hooks/useDialogPosition';
-import { defaultStyles } from './styles/defaultStyles';
+import clsx from 'clsx';
+import useStyle from './hooks/useStyle';
 
-const getDialogIcon = (type: DialogType, customIcon?: React.ComponentType<DialogIconProps>) => {
-  if (customIcon) {
-    return customIcon;
-  }
-  switch (type) {
-    case 'danger':
-      return AlertCircleIcon;
-    case 'warning':
-      return AlertTriangleIcon;
-    case 'info':
-      return InfoIcon;
-    default:
-      return InfoIcon;
-  }
-};
+
 
 export function Confirmy({
   isOpen,
@@ -59,39 +46,33 @@ export function Confirmy({
     asyncOptions
   });
 
-  const mergedStyles = {
-    ...defaultStyles[framework],
-    ...styles
-  };
-
-  const Icon = getDialogIcon(type, customIcon);
-
-  type DarkModeKey = keyof NonNullable<DialogStyleConfig['darkMode']>;
-
-  const getDarkModeStyles = (key: DarkModeKey) => {
-    if (!darkMode || !mergedStyles.darkMode) return '';
-    return mergedStyles.darkMode[key] || '';
-  };
-
-  const getConfirmButtonStyles = () => {
-    const baseStyles = mergedStyles.confirmButton[type];
-    if (!darkMode || !mergedStyles.darkMode?.confirmButton) return baseStyles;
-    return `${baseStyles} ${mergedStyles.darkMode.confirmButton[type] || ''}`;
-  };
+  // Use the useStyle hook
+  const { mergedStyles, getDarkModeStyles, getSizeClass, getConfirmButtonStyles,Icon  } = useStyle({
+    framework,
+    styles,
+    size,
+    darkMode,
+    type,
+    customIcon,
+  });
 
   if (!isOpen) return null;
+
+  const parentContainerClassName = clsx(
+    getPositionClasses(),
+    mergedStyles.container,
+    getDarkModeStyles('container'),
+    getSizeClass(),
+    className
+  );
+
+  console.log(parentContainerClassName);
 
   return (
     <div
       ref={dialogRef}
-      className={`
-        ${getPositionClasses()}
-        ${mergedStyles.container}
-        ${getDarkModeStyles('container')}
-        ${className}
-        ${mergedStyles[`size-${size}`] || ''}
-      `}
-      style={{ zIndex: zIndex + (stackOrder * 10) }}
+      className={parentContainerClassName}
+      //style={{ zIndex: zIndex + (stackOrder * 10) }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
@@ -160,7 +141,7 @@ export function Confirmy({
         </button>
         <button
           onClick={handleConfirm}
-          className={getConfirmButtonStyles()}
+          className={getConfirmButtonStyles(type)}
           disabled={isLoading}
         >
           {isLoading && asyncOptions?.loadingText ? asyncOptions.loadingText : confirmText}
