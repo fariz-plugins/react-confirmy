@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { DialogProviderProps, DialogState, ConfirmationDialogProps } from '../types';
+import type { DialogProviderProps, DialogState, DialogConfirmationProps } from '../types';
 import { DialogContext } from './contexts/DialogContext';
 
 export function DialogProvider({ children }: DialogProviderProps) {
   const [dialogQueue, setDialogQueue] = useState<DialogState[]>([]);
 
   // Function to add a new dialog to the queue
-  const addDialog = (props: ConfirmationDialogProps) => {
+  const addDialog = (props: DialogConfirmationProps) => {
     const dialog: DialogState = {
       id: Math.random().toString(36).substr(2, 9), // Generate a unique ID
       props,
@@ -20,7 +20,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
   };
 
   // Function to update a dialog's props by its ID
-  const updateDialog = (id: string, props: Partial<ConfirmationDialogProps>) => {
+  const updateDialog = (id: string, props: Partial<DialogConfirmationProps>) => {
     setDialogQueue((prev) =>
       prev.map((dialog) =>
         dialog.id === id ? { ...dialog, props: { ...dialog.props, ...props } } : dialog

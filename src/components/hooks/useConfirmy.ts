@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { DialogAsyncOptions } from '../../types';
 
 interface UseConfirmyProps {
@@ -37,6 +36,7 @@ export const useConfirmy = ({
       } else {
         setError('An error occurred');
       }
+      console.error(error)
     } finally {
       setIsLoading(false);
     }

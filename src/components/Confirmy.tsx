@@ -38,7 +38,7 @@ export function Confirmy({
   className = '',
   darkMode = false,
   customIcon,
-  animation,
+  //TODO: animation,
   zIndex = 50,
   formFields = [],
   asyncOptions,
@@ -129,7 +129,7 @@ export function Confirmy({
 
       {formFields.length > 0 && (
         <div className={mergedStyles.form}>
-          {formFields.map((field, index) => (
+          {formFields.map((field) => (
             <div key={field.name} className={mergedStyles.formField}>
               <label htmlFor={field.name} className={mergedStyles.label}>
                 {field.label}
