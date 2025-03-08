@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-03-08
+
+### Breaking Changes
+- **Type Names**
+  - Added 'Dialog' prefix to all form-related types
+  - `StyleConfig` is now `DialogStyleConfig`
+  - `AnimationConfig` is now `DialogAnimationConfig`
+  - `AsyncConfirmOptions` is now `DialogAsyncOptions`
+  - Position, size, and framework types are now `DialogPosition`, `DialogSize`, and `DialogFramework`
+
+### Migration Guide
+To upgrade to version 1.1.0:
+1. Update all type imports to use the new 'Dialog' prefixed names
+2. If importing directly from `src/index.tsx`, update imports to use the main entry point `src/index.ts`
+3. No changes required to component props or functionality, only type definitions are affected
+
+### Changed
+- **Code Organization**
+  - Moved component implementation from `src/index.tsx` to `src/components/Confirmy.tsx`
+  - Centralized all exports through `src/index.ts`
+  - Improved type naming convention using 'Dialog' prefix (e.g., 'DialogFormField')
+  - Separated styles and utilities into their respective directories
+
+### Fixed
+- Removed duplicate Confirmy component implementation
+- Simplified main entry point to handle exports and context only
+
 ## [1.0.3] - 2025-03-08
 [docs: update documentation]
 - Remove framework installation steps from README

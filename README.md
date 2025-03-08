@@ -97,18 +97,18 @@ Select your preferred framework using the `framework` prop:
 | `message` | string | 'Are you sure you want to proceed?' | Dialog message |
 | `confirmText` | string | 'Confirm' | Text for the confirm button |
 | `cancelText` | string | 'Cancel' | Text for the cancel button |
-| `type` | 'danger' \| 'warning' \| 'info' | 'warning' | Sets the dialog type and styling |
-| `size` | 'sm' \| 'md' \| 'lg' | 'md' | Controls the dialog size |
-| `position` | 'top' \| 'bottom' \| 'left' \| 'right' | 'top' | Sets the dialog position relative to the trigger |
-| `framework` | 'tailwind' \| 'bootstrap' \| 'none' | 'tailwind' | Specifies the CSS framework to use |
-| `styles` | Partial<StyleConfig> | {} | Custom styles override |
+| `type` | DialogType | 'warning' | Sets the dialog type ('danger' \| 'warning' \| 'info') |
+| `size` | DialogSize | 'md' | Controls the dialog size ('sm' \| 'md' \| 'lg') |
+| `position` | DialogPosition | 'top' | Sets the dialog position ('top' \| 'bottom' \| 'left' \| 'right') |
+| `framework` | DialogFramework | 'tailwind' | CSS framework to use ('tailwind' \| 'bootstrap' \| 'none') |
+| `styles` | Partial<DialogStyleConfig> | {} | Custom styles override |
 | `className` | string | '' | Additional CSS classes |
 | `darkMode` | boolean | false | Enables dark mode |
 | `customIcon` | React.ComponentType<DialogIconProps> | undefined | Custom icon component |
-| `animation` | AnimationConfig | { type: 'scale', duration: 200, timing: 'ease-out' } | Animation configuration |
+| `animation` | DialogAnimationConfig | { type: 'scale', duration: 200, timing: 'ease-out' } | Animation configuration |
 | `zIndex` | number | 50 | Sets the z-index of the dialog |
 | `formFields` | DialogFormField[] | [] | Form fields configuration |
-| `asyncOptions` | AsyncConfirmOptions | undefined | Async operation configuration |
+| `asyncOptions` | DialogAsyncOptions | undefined | Async operation configuration |
 | `stackOrder` | number | 0 | Order in the dialog stack |
 | `nested` | boolean | false | Whether this is a nested dialog |
 | `parentId` | string | undefined | ID of the parent dialog |
