@@ -1,28 +1,27 @@
-// Components
-export { Confirmy } from './components/Confirmy';
-export { DialogProvider } from './components/DialogProvider';
-export { useDialog } from './components/hooks/useDialog';
-
-// Context
-export { DialogContext } from './contexts/DialogContext';
-
-// Hooks
-export { useConfirmy } from './hooks/useConfirmy';
-
 // Types
 export type {
   DialogType,
   DialogSize,
   DialogPosition,
   Framework,
-  StyleConfig,
-  ConfirmationDialogProps,
-  DialogProviderProps,
-  DialogContextType,
+  DialogAnimationConfig,
+  DialogAsyncOptions,
+  DialogIconProps,
+  DialogConfirmationProps,
   DialogState,
-  DialogFormField,
-  AsyncConfirmOptions,
-  AnimationConfig,
-  TransitionTiming,
-  DialogIconProps
+  DialogContextType,
+  DialogProviderProps,
+  DialogStyleConfig,
+  DialogFormField
 } from './types';
+
+// Components
+export { DialogContext, DialogProvider } from './components/contexts/DialogContext';
+export { Confirmy } from './components/Confirmy';
+
+// Hooks
+export { useDialog } from './components/hooks/useDialog';
+export { useConfirmy } from './components/hooks/useConfirmy';
+
+// Styles
+export { defaultStyles } from './components/styles/defaultStyles';

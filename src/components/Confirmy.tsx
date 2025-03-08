@@ -1,89 +1,85 @@
-import React from 'react';
-import { XIcon } from './icons';
-import type { ConfirmationDialogProps } from '../types';
-import { useConfirmy } from '../hooks/useConfirmy';
-import { defaultStyles } from './styles';
-import { getDialogIcon, getIconColor } from '../utils/iconUtils';
+import { useState } from 'react';
+import { XIcon, AlertCircleIcon, AlertTriangleIcon, InfoIcon } from './icons';
+import type { DialogConfirmationProps, DialogType, DialogIconProps, DialogStyleConfig } from '../types';
+import { useConfirmy } from './hooks/useConfirmy';
+import { useDialogPosition } from './hooks/useDialogPosition';
+import { defaultStyles } from './styles/defaultStyles';
 
-export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
-  const {
+const getDialogIcon = (type: DialogType, customIcon?: React.ComponentType<DialogIconProps>) => {
+  if (customIcon) {
+    return customIcon;
+  }
+  switch (type) {
+    case 'danger':
+      return AlertCircleIcon;
+    case 'warning':
+      return AlertTriangleIcon;
+    case 'info':
+      return InfoIcon;
+    default:
+      return InfoIcon;
+  }
+};
+
+export function Confirmy({
+  isOpen,
+  onClose,
+  onConfirm,
+  triggerRef,
+  title = 'Confirm Action',
+  message = 'Are you sure you want to proceed?',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  type = 'warning',
+  size = 'md',
+  position = 'top',
+  framework = 'tailwind',
+  styles = {},
+  className = '',
+  darkMode = false,
+  customIcon,
+  //TODO: animation,
+  zIndex = 50,
+  formFields = [],
+  asyncOptions,
+  stackOrder = 0
+}: DialogConfirmationProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { dialogRef, arrowRef, getPositionClasses } = useDialogPosition({
     isOpen,
+    triggerRef,
+    position
+  });
+  const { handleClose, handleConfirm } = useConfirmy({
     onClose,
-    title = 'Confirm Action',
-    message = 'Are you sure you want to proceed?',
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
-    type = 'warning',
-    framework = 'tailwind',
-    styles = {},
-    className = '',
-    darkMode = false,
-    customIcon,
-    zIndex = 50,
-    formFields = [],
-    position = 'center'
-  } = props;
+    onConfirm,
+    setIsLoading,
+    setError,
+    asyncOptions
+  });
 
-  const {
-    dialogRef,
-    arrowRef,
-    firstFocusableRef,
-    formData,
-    isLoading,
-    status,
-    handleFormChange,
-    handleConfirm,
-  } = useConfirmy(props);
-
-  if (!isOpen) return null;
-
-  const Icon = getDialogIcon(type, customIcon);
-  const iconColorClass = getIconColor(type, framework);
-
-  // Get status text for async operations
-  const getStatusText = () => {
-    return status || message;
-  };
-
-  // Merge default styles with custom styles
   const mergedStyles = {
     ...defaultStyles[framework],
-    ...styles,
+    ...styles
   };
 
-  // Render form fields if provided
-  const renderFormFields = () => {
-    return formFields.map((field) => (
-      <div key={field.name} className="mb-3">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {field.label}
-        </label>
-        <input
-          type={field.type || 'text'}
-          name={field.name}
-          value={formData[field.name] || ''}
-          onChange={(e) => handleFormChange(field.name, e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          required={field.required}
-          placeholder={field.placeholder}
-        />
-      </div>
-    ));
+  const Icon = getDialogIcon(type, customIcon);
+
+  type DarkModeKey = keyof NonNullable<DialogStyleConfig['darkMode']>;
+
+  const getDarkModeStyles = (key: DarkModeKey) => {
+    if (!darkMode || !mergedStyles.darkMode) return '';
+    return mergedStyles.darkMode[key] || '';
   };
 
-  // Position classes based on the position prop
-  const getPositionClasses = () => {
-    const baseClasses = 'fixed';
-    switch (position) {
-      case 'top':
-        return `${baseClasses} top-4 left-1/2 -translate-x-1/2`;
-      case 'bottom':
-        return `${baseClasses} bottom-4 left-1/2 -translate-x-1/2`;
-      case 'center':
-      default:
-        return `${baseClasses} top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`;
-    }
+  const getConfirmButtonStyles = () => {
+    const baseStyles = mergedStyles.confirmButton[type];
+    if (!darkMode || !mergedStyles.darkMode?.confirmButton) return baseStyles;
+    return `${baseStyles} ${mergedStyles.darkMode.confirmButton[type] || ''}`;
   };
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -91,24 +87,18 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
       className={`
         ${getPositionClasses()}
         ${mergedStyles.container}
+        ${getDarkModeStyles('container')}
         ${className}
-        ${darkMode ? mergedStyles.darkMode?.container : ''}
+        ${mergedStyles[`size-${size}`] || ''}
       `}
-      style={{ zIndex }}
+      style={{ zIndex: zIndex + (stackOrder * 10) }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
-      aria-describedby="dialog-message"
     >
-      <div
-        ref={arrowRef}
-        className={mergedStyles.arrow}
-        data-popper-arrow
-      />
-
+      {triggerRef && <div ref={arrowRef} className={mergedStyles.arrow} data-popper-arrow />}
       <button
-        ref={firstFocusableRef}
-        onClick={onClose}
+        onClick={handleClose}
         className={mergedStyles.closeButton}
         aria-label="Close dialog"
       >
@@ -116,41 +106,66 @@ export const Confirmy: React.FC<ConfirmationDialogProps> = (props) => {
       </button>
 
       <div className={mergedStyles.header}>
-        <Icon className={`${mergedStyles.icon} ${iconColorClass}`} />
-        <h3 id="dialog-title" className={`${mergedStyles.title} ${darkMode ? mergedStyles.darkMode?.title : ''}`}>
+        <Icon className={mergedStyles.icon} />
+        <h3
+          id="dialog-title"
+          className={`
+            ${mergedStyles.title}
+            ${getDarkModeStyles('title')}
+          `}
+        >
           {title}
         </h3>
       </div>
 
-      <p id="dialog-message" className={`${mergedStyles.message} ${darkMode ? mergedStyles.darkMode?.message : ''}`}>
-        {getStatusText()}
+      <p
+        className={`
+          ${mergedStyles.message}
+          ${getDarkModeStyles('message')}
+        `}
+      >
+        {error || message}
       </p>
 
       {formFields.length > 0 && (
-        <div className="mb-4">
-          {renderFormFields()}
+        <div className={mergedStyles.form}>
+          {formFields.map((field) => (
+            <div key={field.name} className={mergedStyles.formField}>
+              <label htmlFor={field.name} className={mergedStyles.label}>
+                {field.label}
+                {field.required && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                id={field.name}
+                type={field.type || 'text'}
+                placeholder={field.placeholder}
+                required={field.required}
+                className={mergedStyles.input}
+              />
+            </div>
+          ))}
         </div>
       )}
 
       <div className={mergedStyles.footer}>
         <button
-          onClick={onClose}
-          className={`${mergedStyles.cancelButton} ${darkMode ? mergedStyles.darkMode?.cancelButton : ''}`}
+          onClick={handleClose}
+          className={`
+            ${mergedStyles.cancelButton}
+            ${getDarkModeStyles('cancelButton')}
+          `}
           disabled={isLoading}
         >
           {cancelText}
         </button>
         <button
           onClick={handleConfirm}
-          className={`
-            ${mergedStyles.confirmButton[type]}
-            ${darkMode ? mergedStyles.darkMode?.confirmButton[type] : ''}
-          `}
+          className={getConfirmButtonStyles()}
           disabled={isLoading}
         >
-          {confirmText}
+          {isLoading && asyncOptions?.loadingText ? asyncOptions.loadingText : confirmText}
         </button>
       </div>
     </div>
   );
-};
+}

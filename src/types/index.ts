@@ -4,16 +4,16 @@ export type DialogType = 'info' | 'warning' | 'danger';
 export type DialogSize = 'sm' | 'md' | 'lg';
 export type DialogPosition = 'top' | 'center' | 'bottom';
 export type Framework = 'tailwind' | 'bootstrap' | 'none';
-export type TransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+export type DialogTransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
 
-export interface AnimationConfig {
+export interface DialogAnimationConfig {
   type: 'fade' | 'scale' | 'slide' | 'none';
   duration: number;
-  timing: TransitionTiming;
+  timing: DialogTransitionTiming;
   customKeyframes?: string;
 }
 
-export interface AsyncConfirmOptions {
+export interface DialogAsyncOptions {
   loadingText?: string;
   successText?: string;
   errorText?: string;
@@ -26,47 +26,47 @@ export interface DialogIconProps extends SVGProps<SVGSVGElement> {
   color?: string;
 }
 
-export interface ConfirmationDialogProps {
+export interface DialogConfirmationProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
-  triggerRef?: React.RefObject<HTMLElement>;
+  triggerRef: React.RefObject<HTMLElement>;  // Required for proper positioning
   title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
   type?: DialogType;
-  size?: DialogSize;
+  size?: DialogSize;  // Controls dialog width: sm (320px), md (400px), lg (512px)
   position?: DialogPosition;
   framework?: Framework;
-  styles?: Partial<StyleConfig>;
+  styles?: Partial<DialogStyleConfig>;
   className?: string;
   darkMode?: boolean;
   customIcon?: React.ComponentType<DialogIconProps>;
-  animation?: AnimationConfig;
+  animation?: DialogAnimationConfig;
   zIndex?: number;
-  formFields?: DialogFormField[];
-  asyncOptions?: AsyncConfirmOptions;
-  stackOrder?: number;
+  formFields?: DialogFormField[];  // Optional form fields to render in the dialog
+  asyncOptions?: DialogAsyncOptions;
+  stackOrder?: number;  // Used to calculate final z-index when multiple dialogs are open
 }
 
 export interface DialogState {
   id: string;
-  props: ConfirmationDialogProps;
+  props: DialogConfirmationProps;
 }
 
 export interface DialogContextType {
   dialogQueue: DialogState[];
-  addDialog: (props: ConfirmationDialogProps) => void;
+  addDialog: (props: DialogConfirmationProps) => void;
   removeDialog: (id: string) => void;
-  updateDialog: (id: string, props: Partial<ConfirmationDialogProps>) => void;
+  updateDialog: (id: string, props: Partial<DialogConfirmationProps>) => void;
 }
 
 export interface DialogProviderProps {
   children: ReactNode;
 }
 
-export interface StyleConfig {
+export interface DialogStyleConfig {
   container: string;
   arrow: string;
   closeButton: string;
@@ -75,6 +75,10 @@ export interface StyleConfig {
   icon: string;
   title: string;
   message: string;
+  form: string;  // Container for form fields
+  formField: string;  // Container for each form field
+  label: string;  // Label for form fields
+  input: string;  // Input element styles
   footer: string;
   cancelButton: string;
   confirmButton: {
@@ -82,10 +86,15 @@ export interface StyleConfig {
     warning: string;
     info: string;
   };
+  'size-sm': string;  // Styles for small dialog size
+  'size-md': string;  // Styles for medium dialog size
+  'size-lg': string;  // Styles for large dialog size
   darkMode?: {
     container?: string;
     title?: string;
     message?: string;
+    label?: string;  // Dark mode label styles
+    input?: string;  // Dark mode input styles
     cancelButton?: string;
     confirmButton?: {
       danger: string;
@@ -96,9 +105,9 @@ export interface StyleConfig {
 }
 
 export interface DialogFormField {
-  name: string;
-  label: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
+  name: string;  // Unique identifier for the form field
+  label: string;  // Label text to display
+  type?: string;  // HTML input type (text, email, number, etc.)
+  required?: boolean;  // Whether the field is required
+  placeholder?: string;  // Placeholder text for the input
 }
