@@ -66,8 +66,6 @@ export function Confirmy({
     className
   );
 
-  console.log(parentContainerClassName);
-
   return (
     <div
       ref={dialogRef}
