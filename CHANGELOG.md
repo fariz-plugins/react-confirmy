@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2025-03-09
+
+### Breaking Changes
+- Complete styling system overhaul
+- New hook-based architecture
+- Changed default framework to Tailwind CSS
+- Updated minimum React version requirement to 18.0.0
+
+### Added
+- New `useStyle` hook for better style management
+- Dark mode support with `darkMode` prop
+- Form fields support with validation
+- Custom icon support
+- Dialog queuing system
+- Nested dialogs support
+- Smart positioning with arrow indicators
+- Multiple animation types (fade, scale, slide)
+- Async operation handling with loading states
+- Framework-agnostic styling option
+- TypeScript strict mode support
+- Custom animation keyframes support
+
+### Improved
+- Better TypeScript type definitions
+- Enhanced positioning system using Popper.js
+- Improved accessibility features
+- Better responsive design
+- More customization options
+- Better error handling
+- Performance optimizations
+
+### Fixed
+- Position calculation issues
+- Z-index stacking problems
+- Dialog closing behavior
+- Event propagation issues
+- Mobile device compatibility issues
+
+### Deprecated
+- Version 1.x.x is now deprecated and will no longer receive updates
+
 ## [1.1.0] - 2025-03-08
 
 ### Breaking Changes
