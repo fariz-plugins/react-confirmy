@@ -4,6 +4,18 @@ A beautiful, customizable, and accessible confirmation dialog component for Reac
 
 ![Confirmation Dialog Preview](https://raw.githubusercontent.com/fariz-plugins/react-confirmy/refs/heads/main/banner.png)
 
+## ⚠️ Important Version Notice
+
+Version 2.0.0 introduces significant improvements and breaking changes. We strongly recommend upgrading to version 2.0.0 as version 1.x.x will no longer receive updates or support.
+
+### Why Upgrade?
+- Improved styling system with better customization
+- Enhanced dark mode support
+- Better TypeScript support
+- New features including custom icons and form fields
+- Improved positioning system
+- Better framework compatibility (Tailwind, etc.)
+
 ## Features
 
 - 🎨 Beautiful, modern design with dark mode support

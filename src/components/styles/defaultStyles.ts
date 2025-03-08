@@ -21,9 +21,9 @@ export const defaultStyles: Record<Framework, DialogStyleConfig> = {
       warning: 'px-3 py-1.5 text-xs font-medium text-white rounded-md bg-yellow-600 hover:bg-yellow-700',
       info: 'px-3 py-1.5 text-xs font-medium text-white rounded-md bg-blue-600 hover:bg-blue-700'
     },
-    'size-sm': 'w-[320px]',
-    'size-md': 'w-[400px]',
-    'size-lg': 'w-[512px]',
+    'sizeSM': 'w-[320px]',
+    'sizeMD': 'w-[400px]',
+    'sizeLG': 'w-[512px]',
     darkMode: {
       container: 'bg-gray-800 border-gray-700',
       title: 'text-gray-100',
@@ -58,9 +58,9 @@ export const defaultStyles: Record<Framework, DialogStyleConfig> = {
       warning: 'btn btn-sm btn-warning',
       info: 'btn btn-sm btn-primary'
     },
-    'size-sm': 'w-320px',
-    'size-md': 'w-400px',
-    'size-lg': 'w-512px',
+    'sizeSM': 'w-320px',
+    'sizeMD': 'w-400px',
+    'sizeLG': 'w-512px',
     darkMode: {
       container: 'bg-dark text-light border-secondary',
       title: 'text-light',
@@ -95,9 +95,9 @@ export const defaultStyles: Record<Framework, DialogStyleConfig> = {
       warning: '',
       info: ''
     },
-    'size-sm': '',
-    'size-md': '',
-    'size-lg': '',
+    'sizeSM': '',
+    'sizeMD': '',
+    'sizeLG': '',
     darkMode: {
       container: '',
       title: '',

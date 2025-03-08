@@ -86,9 +86,9 @@ export interface DialogStyleConfig {
     warning: string;
     info: string;
   };
-  'size-sm': string;  // Styles for small dialog size
-  'size-md': string;  // Styles for medium dialog size
-  'size-lg': string;  // Styles for large dialog size
+  'sizeSM': string;  // Styles for small dialog size
+  'sizeMD': string;  // Styles for medium dialog size
+  'sizeLG': string;  // Styles for large dialog size
   darkMode?: {
     container?: string;
     title?: string;
