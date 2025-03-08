@@ -111,7 +111,7 @@ interface DialogFormField {
 declare const DialogContext: react.Context<DialogContextType | undefined>;
 declare function DialogProvider({ children }: DialogProviderProps): react_jsx_runtime.JSX.Element;
 
-declare function Confirmy({ isOpen, onClose, onConfirm, triggerRef, title, message, confirmText, cancelText, type, size, position, framework, styles, className, darkMode, customIcon, zIndex, formFields, asyncOptions, stackOrder }: DialogConfirmationProps): react_jsx_runtime.JSX.Element | null;
+declare function Confirmy({ isOpen, onClose, onConfirm, triggerRef, title, message, confirmText, cancelText, type, size, position, framework, styles, className, darkMode, customIcon, formFields, asyncOptions, }: DialogConfirmationProps): react_jsx_runtime.JSX.Element | null;
 
 /**
  * Hook for accessing dialog context functionality

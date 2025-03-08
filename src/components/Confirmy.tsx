@@ -26,10 +26,10 @@ export function Confirmy({
   darkMode = false,
   customIcon,
   //TODO: animation,
-  zIndex = 50,
+  //zIndex = 50,
   formFields = [],
   asyncOptions,
-  stackOrder = 0
+  //stackOrder = 0
 }: DialogConfirmationProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
