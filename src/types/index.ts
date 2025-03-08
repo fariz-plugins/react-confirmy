@@ -30,13 +30,13 @@ export interface DialogConfirmationProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
-  triggerRef?: React.RefObject<HTMLElement>;  // Optional for fixed positioning
+  triggerRef: React.RefObject<HTMLElement>;  // Required for proper positioning
   title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
   type?: DialogType;
-  size?: DialogSize;
+  size?: DialogSize;  // Controls dialog width: sm (320px), md (400px), lg (512px)
   position?: DialogPosition;
   framework?: Framework;
   styles?: Partial<DialogStyleConfig>;
@@ -45,9 +45,9 @@ export interface DialogConfirmationProps {
   customIcon?: React.ComponentType<DialogIconProps>;
   animation?: DialogAnimationConfig;
   zIndex?: number;
-  formFields?: DialogFormField[];
+  formFields?: DialogFormField[];  // Optional form fields to render in the dialog
   asyncOptions?: DialogAsyncOptions;
-  stackOrder?: number;
+  stackOrder?: number;  // Used to calculate final z-index when multiple dialogs are open
 }
 
 export interface DialogState {
@@ -75,6 +75,10 @@ export interface DialogStyleConfig {
   icon: string;
   title: string;
   message: string;
+  form: string;  // Container for form fields
+  formField: string;  // Container for each form field
+  label: string;  // Label for form fields
+  input: string;  // Input element styles
   footer: string;
   cancelButton: string;
   confirmButton: {
@@ -82,10 +86,15 @@ export interface DialogStyleConfig {
     warning: string;
     info: string;
   };
+  'size-sm': string;  // Styles for small dialog size
+  'size-md': string;  // Styles for medium dialog size
+  'size-lg': string;  // Styles for large dialog size
   darkMode?: {
     container?: string;
     title?: string;
     message?: string;
+    label?: string;  // Dark mode label styles
+    input?: string;  // Dark mode input styles
     cancelButton?: string;
     confirmButton?: {
       danger: string;
@@ -96,9 +105,9 @@ export interface DialogStyleConfig {
 }
 
 export interface DialogFormField {
-  name: string;
-  label: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
+  name: string;  // Unique identifier for the form field
+  label: string;  // Label text to display
+  type?: string;  // HTML input type (text, email, number, etc.)
+  required?: boolean;  // Whether the field is required
+  placeholder?: string;  // Placeholder text for the input
 }

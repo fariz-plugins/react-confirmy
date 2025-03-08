@@ -89,8 +89,9 @@ export function Confirmy({
         ${mergedStyles.container}
         ${getDarkModeStyles('container')}
         ${className}
+        ${mergedStyles[`size-${size}`] || ''}
       `}
-      style={{ zIndex }}
+      style={{ zIndex: zIndex + (stackOrder * 10) }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
@@ -125,6 +126,26 @@ export function Confirmy({
       >
         {error || message}
       </p>
+
+      {formFields.length > 0 && (
+        <div className={mergedStyles.form}>
+          {formFields.map((field, index) => (
+            <div key={field.name} className={mergedStyles.formField}>
+              <label htmlFor={field.name} className={mergedStyles.label}>
+                {field.label}
+                {field.required && <span className="text-red-500">*</span>}
+              </label>
+              <input
+                id={field.name}
+                type={field.type || 'text'}
+                placeholder={field.placeholder}
+                required={field.required}
+                className={mergedStyles.input}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className={mergedStyles.footer}>
         <button
