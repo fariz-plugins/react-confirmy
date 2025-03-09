@@ -18,6 +18,12 @@ export interface DialogAsyncOptions {
   successText?: string;
   errorText?: string;
   showLoadingSpinner?: boolean;
+  retryAttempts?: number;
+  retryDelay?: number;
+  progressIndicator?: boolean;
+  onRetry?: () => void;
+  spinnerColor?: string;
+  spinnerSize?: number;
 }
 
 export interface DialogIconProps extends SVGProps<SVGSVGElement> {
@@ -75,6 +81,7 @@ export interface DialogStyleConfig {
   icon: string;
   title: string;
   message: string;
+  content: string;  // Container for message and progress indicator
   form: string;  // Container for form fields
   formField: string;  // Container for each form field
   label: string;  // Label for form fields

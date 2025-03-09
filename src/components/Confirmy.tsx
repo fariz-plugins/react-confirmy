@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import type { DialogConfirmationProps, } from '../types';
+import type { DialogConfirmationProps } from '../types';
 import { XIcon } from './icons';
-import { useConfirmy } from './hooks/useConfirmy';
 import { useDialogPosition } from './hooks/useDialogPosition';
+import { useAsyncDialog } from './hooks/useAsyncDialog';
+import { LoadingSpinner } from './LoadingSpinner';
 import clsx from 'clsx';
 import useStyle from './hooks/useStyle';
-
-
 
 export function Confirmy({
   isOpen,
@@ -25,29 +23,31 @@ export function Confirmy({
   className = '',
   darkMode = false,
   customIcon,
-  //TODO: animation,
-  //zIndex = 50,
+  zIndex = 50,
   formFields = [],
   asyncOptions,
-  //stackOrder = 0
+  stackOrder = 0
 }: DialogConfirmationProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { dialogRef, arrowRef, getPositionClasses } = useDialogPosition({
     isOpen,
     triggerRef,
     position
   });
-  const { handleClose, handleConfirm } = useConfirmy({
-    onClose,
+
+  const { 
+    isLoading, 
+    error, 
+    progress,
+    handleConfirm, 
+    handleRetry
+  } = useAsyncDialog({
     onConfirm,
-    setIsLoading,
-    setError,
-    asyncOptions
+    asyncOptions,
+    onClose
   });
 
   // Use the useStyle hook
-  const { mergedStyles, getDarkModeStyles, getSizeClass, getConfirmButtonStyles,Icon  } = useStyle({
+  const { mergedStyles, getDarkModeStyles, getSizeClass, getConfirmButtonStyles, Icon } = useStyle({
     framework,
     styles,
     size,
@@ -70,14 +70,14 @@ export function Confirmy({
     <div
       ref={dialogRef}
       className={parentContainerClassName}
-      //style={{ zIndex: zIndex + (stackOrder * 10) }}
+      style={{ zIndex: zIndex + (stackOrder * 10) }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
       {triggerRef && <div ref={arrowRef} className={mergedStyles.arrow} data-popper-arrow />}
       <button
-        onClick={handleClose}
+        onClick={onClose}
         className={mergedStyles.closeButton}
         aria-label="Close dialog"
       >
@@ -97,38 +97,51 @@ export function Confirmy({
         </h3>
       </div>
 
-      <p
-        className={`
-          ${mergedStyles.message}
-          ${getDarkModeStyles('message')}
-        `}
-      >
-        {error || message}
-      </p>
+      <div className={mergedStyles.content}>
+        <p
+          className={`
+            ${mergedStyles.message}
+            ${getDarkModeStyles('message')}
+            ${error ? 'text-red-500' : ''}
+          `}
+        >
+          {error || message}
+        </p>
 
-      {formFields.length > 0 && (
-        <div className={mergedStyles.form}>
-          {formFields.map((field) => (
-            <div key={field.name} className={mergedStyles.formField}>
-              <label htmlFor={field.name} className={mergedStyles.label}>
-                {field.label}
-                {field.required && <span className="text-red-500">*</span>}
-              </label>
-              <input
-                id={field.name}
-                type={field.type || 'text'}
-                placeholder={field.placeholder}
-                required={field.required}
-                className={mergedStyles.input}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+        {asyncOptions?.progressIndicator && isLoading && (
+          <div className="w-full bg-gray-200 rounded-full h-2.5 my-4">
+            <div 
+              className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
+
+        {formFields.length > 0 && (
+          <div className={mergedStyles.form}>
+            {formFields.map((field) => (
+              <div key={field.name} className={mergedStyles.formField}>
+                <label htmlFor={field.name} className={mergedStyles.label}>
+                  {field.label}
+                  {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  id={field.name}
+                  type={field.type || 'text'}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                  className={mergedStyles.input}
+                  disabled={isLoading}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className={mergedStyles.footer}>
         <button
-          onClick={handleClose}
+          onClick={onClose}
           className={`
             ${mergedStyles.cancelButton}
             ${getDarkModeStyles('cancelButton')}
@@ -137,13 +150,30 @@ export function Confirmy({
         >
           {cancelText}
         </button>
-        <button
-          onClick={handleConfirm}
-          className={getConfirmButtonStyles(type)}
-          disabled={isLoading}
-        >
-          {isLoading && asyncOptions?.loadingText ? asyncOptions.loadingText : confirmText}
-        </button>
+        {error ? (
+          <button
+            onClick={handleRetry}
+            className={getConfirmButtonStyles(type)}
+            disabled={isLoading}
+          >
+            Retry
+          </button>
+        ) : (
+          <button
+            onClick={handleConfirm}
+            className={getConfirmButtonStyles(type)}
+            disabled={isLoading}
+          >
+            {isLoading && asyncOptions?.showLoadingSpinner && (
+              <LoadingSpinner 
+                size={asyncOptions?.spinnerSize || 16} 
+                color={asyncOptions?.spinnerColor} 
+                className="mr-2 inline-block"
+              />
+            )}
+            {isLoading && asyncOptions?.loadingText ? asyncOptions.loadingText : confirmText}
+          </button>
+        )}
       </div>
     </div>
   );
