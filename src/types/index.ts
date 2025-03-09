@@ -4,13 +4,38 @@ export type DialogType = 'info' | 'warning' | 'danger';
 export type DialogSize = 'sm' | 'md' | 'lg';
 export type DialogPosition = 'top' | 'center' | 'bottom';
 export type Framework = 'tailwind' | 'bootstrap' | 'none';
-export type DialogTransitionTiming = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+
+export type DialogAnimationType = 
+  | 'fade' 
+  | 'scale' 
+  | 'slide-up' 
+  | 'slide-down' 
+  | 'slide-left' 
+  | 'slide-right' 
+  | 'flip' 
+  | 'rotate' 
+  | 'bounce' 
+  | 'none';
+
+export type DialogTransitionTiming = 
+  | 'linear' 
+  | 'ease' 
+  | 'ease-in' 
+  | 'ease-out' 
+  | 'ease-in-out' 
+  | 'bounce' 
+  | 'elastic';
 
 export interface DialogAnimationConfig {
-  type: 'fade' | 'scale' | 'slide' | 'none';
-  duration: number;
-  timing: DialogTransitionTiming;
-  customKeyframes?: string;
+  type: DialogAnimationType;
+  duration?: number;
+  timing?: DialogTransitionTiming;
+  delay?: number;
+  custom?: {
+    enter?: string;
+    exit?: string;
+    active?: string;
+  };
 }
 
 export interface DialogAsyncOptions {

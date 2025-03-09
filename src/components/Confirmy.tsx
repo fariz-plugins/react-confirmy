@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { DialogConfirmationProps, } from '../types';
+import type { DialogConfirmationProps } from '../types';
 import { XIcon } from './icons';
-import { useConfirmy } from './hooks/useConfirmy';
 import { useDialogPosition } from './hooks/useDialogPosition';
 import clsx from 'clsx';
 import useStyle from './hooks/useStyle';
-
-
+import { getAnimationClasses, getAnimationStyles } from '../utils/animationUtils';
+import { useConfirmy } from './hooks/useConfirmy';
+import { useAsyncOptions } from './hooks/useAsyncOptions';
 
 export function Confirmy({
   isOpen,
@@ -25,11 +25,11 @@ export function Confirmy({
   className = '',
   darkMode = false,
   customIcon,
-  //TODO: animation,
-  //zIndex = 50,
+  zIndex = 50,
+  animation = { type: 'fade', duration: 200, timing: 'ease-out' },
+  stackOrder = 0,
   formFields = [],
   asyncOptions,
-  //stackOrder = 0
 }: DialogConfirmationProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,8 +46,7 @@ export function Confirmy({
     asyncOptions
   });
 
-  // Use the useStyle hook
-  const { mergedStyles, getDarkModeStyles, getSizeClass, getConfirmButtonStyles,Icon  } = useStyle({
+  const { mergedStyles, getDarkModeStyles, getSizeClass, getConfirmButtonStyles, Icon } = useStyle({
     framework,
     styles,
     size,
@@ -60,17 +59,23 @@ export function Confirmy({
 
   const parentContainerClassName = clsx(
     getPositionClasses(),
+    getAnimationClasses(isOpen, framework, animation),
     mergedStyles.container,
     getDarkModeStyles('container'),
     getSizeClass(),
     className
   );
 
+  const animationStyles = getAnimationStyles(animation, framework);
+
   return (
     <div
       ref={dialogRef}
       className={parentContainerClassName}
-      //style={{ zIndex: zIndex + (stackOrder * 10) }}
+      style={{ 
+        zIndex: zIndex + (stackOrder * 10),
+        ...animationStyles
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
@@ -97,14 +102,16 @@ export function Confirmy({
         </h3>
       </div>
 
-      <p
-        className={`
-          ${mergedStyles.message}
-          ${getDarkModeStyles('message')}
-        `}
-      >
-        {error || message}
-      </p>
+      <div className={mergedStyles.content}>
+        <p
+          className={`
+            ${mergedStyles.message}
+            ${getDarkModeStyles('message')}
+          `}
+        >
+          {error || message}
+        </p>
+      </div>
 
       {formFields.length > 0 && (
         <div className={mergedStyles.form}>
