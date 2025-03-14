@@ -5,6 +5,7 @@ import { useConfirmy } from './hooks/useConfirmy';
 import { useDialogPosition } from './hooks/useDialogPosition';
 import clsx from 'clsx';
 import useStyle from './hooks/useStyle';
+import { getAnimationClasses } from '../utils/animationUtils';
 
 
 
@@ -63,6 +64,7 @@ export function Confirmy({
     mergedStyles.container,
     getDarkModeStyles('container'),
     getSizeClass(),
+    getAnimationClasses(isOpen, framework),
     className
   );
 

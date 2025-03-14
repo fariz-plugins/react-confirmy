@@ -1,11 +1,19 @@
+import clsx from 'clsx';
 import { Framework, DialogAnimationConfig } from '../types';
 
 export const getAnimationClasses = (isOpen: boolean, framework: Framework): string => {
   switch (framework) {
     case 'tailwind':
-      return `transform transition-all origin-center ${isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'}`;
+      return clsx(
+        'transform',
+        'transition-all',
+        'origin-center',
+        isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'
+      )
     case 'bootstrap':
       return `fade ${isOpen ? 'show' : ''}`;
+    case 'none':
+      return `${isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95'}`;
     default:
       return '';
   }
