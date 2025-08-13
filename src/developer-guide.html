@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Confirmy - Developer Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 { color: #2563eb; }
+        code {
+            background: #f1f5f9;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .note {
+            background: #e0f2fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>React Confirmy - Developer Guide</h1>
+    
+    <h2>Project Structure</h2>
+    <pre>
+src/
+├── components/    # React components
+├── context/      # React context providers
+├── hooks/        # Custom React hooks
+├── Icons/        # SVG icons and related components
+├── styles/       # Style configurations
+├── types/        # TypeScript type definitions
+├── utils/        # Utility functions
+└── index.tsx     # Main entry point
+    </pre>
+
+    <h2>Key Components</h2>
+    
+    <h3>1. Confirmy Component</h3>
+    <p>The main dialog component that renders the confirmation modal.</p>
+    <pre>
+// Usage
+&lt;Confirmy
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    onConfirm={handleConfirm}
+    title="Confirm Action"
+    message="Are you sure?"
+    position="bottom"  // 'top' | 'bottom' | 'center'
+    type="warning"     // 'warning' | 'danger' | 'info'
+    size="md"         // 'sm' | 'md' | 'lg'
+/&gt;</pre>
+
+    <h3>2. DialogProvider</h3>
+    <p>Context provider that manages the state of multiple dialogs.</p>
+    <pre>
+// Wrap your app
+&lt;DialogProvider&gt;
+    &lt;App /&gt;
+&lt;/DialogProvider&gt;</pre>
+
+    <h3>3. useConfirmy Hook</h3>
+    <p>Custom hook for managing dialog state and interactions.</p>
+
+    <h2>Customization</h2>
+    
+    <h3>Styling</h3>
+    <p>The plugin supports two styling frameworks:</p>
+    <ul>
+        <li><code>tailwind</code> (default)</li>
+        <li><code>custom</code> - Use your own CSS</li>
+    </ul>
+
+    <div class="note">
+        <strong>Note:</strong> When using custom styles, provide them through the <code>styles</code> prop:
+        <pre>
+&lt;Confirmy
+    styles={{
+        container: 'your-container-class',
+        title: 'your-title-class',
+        // ...other style overrides
+    }}
+/&gt;</pre>
+    </div>
+
+    <h2>Form Fields</h2>
+    <p>The dialog supports dynamic form fields:</p>
+    <pre>
+const formFields = [
+    {
+        name: 'reason',
+        label: 'Reason',
+        type: 'text',
+        required: true
+    },
+    {
+        name: 'description',
+        label: 'Description',
+        type: 'textarea'
+    }
+];</pre>
+
+    <h2>Animation</h2>
+    <p>Customize animations using the animation prop:</p>
+    <pre>
+&lt;Confirmy
+    animation={{
+        type: 'scale',
+        duration: 200,
+        timing: 'ease-out'
+    }}
+/&gt;</pre>
+
+    <h2>Best Practices</h2>
+    <ul>
+        <li>Always wrap your application with <code>DialogProvider</code></li>
+        <li>Use the <code>useConfirmy</code> hook for complex dialog interactions</li>
+        <li>Provide proper ARIA labels for accessibility</li>
+        <li>Use TypeScript types for better development experience</li>
+        <li>Test dialog interactions thoroughly</li>
+    </ul>
+
+    <h2>Type System</h2>
+    <p>Key TypeScript types:</p>
+    <pre>
+type DialogType = 'warning' | 'danger' | 'info';
+type DialogSize = 'sm' | 'md' | 'lg';
+type DialogPosition = 'top' | 'bottom' | 'center';
+type Framework = 'tailwind' | 'custom';</pre>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li>If context errors occur, ensure <code>DialogProvider</code> is properly set up</li>
+        <li>For styling issues, check framework prop and style overrides</li>
+        <li>For form validation, ensure required fields are properly marked</li>
+    </ul>
+
+</body>
+</html>
