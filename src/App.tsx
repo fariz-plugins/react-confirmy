@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Confirmy, DialogProvider, useDialog } from './index';
+import { Confirmy, DialogProvider } from './index';
 import { CopyIcon } from './components/icons';
 import './components/styles/confirmStyles.css';
 
