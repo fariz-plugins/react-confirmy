@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { DialogConfirmationProps, } from '../types';
 import { XIcon } from './icons';
 import { useConfirmy } from './hooks/useConfirmy';
@@ -34,6 +34,8 @@ export function Confirmy({
 }: DialogConfirmationProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Track visibility state for animation - starts false to allow enter animation
+  const [isVisible, setIsVisible] = useState(false);
   const { dialogRef, arrowRef, getPositionClasses } = useDialogPosition({
     isOpen,
     triggerRef,
@@ -57,6 +59,20 @@ export function Confirmy({
     customIcon,
   });
 
+  // Handle enter animation: when isOpen becomes true, render first with hidden state,
+  // then set isVisible to true after a frame to trigger CSS transition
+  useEffect(() => {
+    if (isOpen) {
+      // Use requestAnimationFrame to ensure the initial hidden state is rendered first
+      const frameId = requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+      return () => cancelAnimationFrame(frameId);
+    } else {
+      setIsVisible(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const parentContainerClassName = clsx(
@@ -64,7 +80,7 @@ export function Confirmy({
     mergedStyles.container,
     getDarkModeStyles('container'),
     getSizeClass(),
-    getAnimationClasses(isOpen, framework),
+    getAnimationClasses(isVisible, framework),
     className
   );
 
